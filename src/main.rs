@@ -1,15 +1,6 @@
 use std::process::Command;
 use regex::{Regex, Captures};
-
-// Color/formatting codes for output
-const _RED: &str = "\x1b[31m";
-const _GREEN: &str = "\x1b[32m";
-const _YELLOW: &str = "\x1b[33m";
-const _BLUE: &str = "\x1b[34m";
-const _CYAN: &str = "\x1b[36m";
-const _MAGENTA: &str = "\x1b[35m";
-const _BOLD: &str = "\x1b[1m";
-const _RESET: &str = "\x1b[0m";
+mod colors;
 
 // Simple system fetch tool written in Rust.
 fn main() {
@@ -50,9 +41,9 @@ fn main() {
     println!("{color}{bold}{user}{reset}@{color}{bold}{host}{reset}",
              user = username,
              host = hostname,
-             color = _GREEN,
-             bold = _BOLD,
-             reset = _RESET,
+             color = colors::green,
+             bold = colors::bold,
+             reset = colors::reset,
              );
     // Uptime
     println!("{}", format_data(
@@ -74,9 +65,9 @@ fn format_data(key: &str, value: &str) -> String {
     format!("{color}{bold}{key}{reset} {value}",
             key = key,
             value = value,
-            color = _GREEN,
-            bold = _BOLD,
-            reset = _RESET,
+            color = colors::green,
+            bold = colors::bold,
+            reset = colors::reset,
             ).to_string()
 }
 

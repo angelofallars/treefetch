@@ -97,9 +97,9 @@ fn main() {
 
     println!("{}", format_data(
             "memory",
-            &format!("{total}m / {used}m",
-                     total = total_mem,
-                     used = used_mem)
+            &format!("{used}m / {total}m",
+                     used = used_mem,
+                     total = total_mem)
             ));
 }
 

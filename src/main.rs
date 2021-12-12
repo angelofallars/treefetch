@@ -73,34 +73,25 @@ fn main() {
              reset = colors::reset,
              );
 
-    print_data(
-             "os",
-             &distro_name
-             );
+    print_data("os", &distro_name);
+
+    print_data("kernel", &kernel);
+
+    print_data("shell", &shell);
 
     print_data(
-            "kernel",
-            &kernel
-            );
+        "uptime",
+        &format!("{hours}h {minutes}m",
+                 hours = hours,
+                 minutes = minutes)
+        );
 
     print_data(
-            "shell",
-            &shell
-            );
-
-    print_data(
-            "uptime",
-            &format!("{hours}h {minutes}m",
-                     hours = hours,
-                     minutes = minutes)
-            );
-
-    print_data(
-            "memory",
-            &format!("{used}m / {total}m",
-                     used = used_mem,
-                     total = total_mem)
-            );
+        "memory",
+        &format!("{used}m / {total}m",
+                 used = used_mem,
+                 total = total_mem)
+        );
 }
 
 fn print_data(key: &str, value: &str) {

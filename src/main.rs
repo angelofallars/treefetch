@@ -54,7 +54,7 @@ fn main() {
 
     println!("{}", format_data(
             "uptime",
-            &format!("{hours}h / {minutes}m",
+            &format!("{hours}h {minutes}m",
                      hours = hours,
                      minutes = minutes)
             ));

@@ -17,49 +17,49 @@ fn main() {
                                             "echo $SHELL"));
 
     // Parse the distro name
-    let re_distro = get_regex_capture(&distro_data,
-                                      r"(?x)
-                                      DISTRIB_DESCRIPTION=
-                                      (?P<distro_name>[^\n]+)\n
-                                      ".to_string());
+    let re_distro = match_regex(&distro_data,
+                                r"(?x)
+                                DISTRIB_DESCRIPTION=
+                                (?P<distro_name>[^\n]+)\n
+                                ".to_string());
     let distro_name = re_distro.name("distro_name").unwrap().as_str();
 
     // Parse shell
-    let re_shell = get_regex_capture(&shell,
-                                     r"(?x)
-                                     ^/usr/bin/
-                                     (?P<shell_name>[^\n]+)$
-                                     ".to_string());
+    let re_shell = match_regex(&shell,
+                               r"(?x)
+                               ^/usr/bin/
+                               (?P<shell_name>[^\n]+)$
+                               ".to_string());
     let shell = re_shell.name("shell_name").unwrap().as_str();
 
     // Parse the uptime in hours/minutes
-    let re_uptime = get_regex_capture(&uptime,
-                                      r"(?x)
-                                      (?P<hours>\d+)
-                                      :
-                                      (?P<minutes>\d+)
-                                      ,
-                                      ".to_string());
+    let re_uptime = match_regex(&uptime,
+                                r"(?x)
+                                (?P<hours>\d+)
+                                :
+                                (?P<minutes>\d+)
+                                ,
+                                ".to_string());
     let hours = re_uptime.name("hours").unwrap().as_str();
     let minutes = re_uptime.name("minutes").unwrap().as_str();
 
     // Parse the kernel
-    let re_kernel = get_regex_capture(&kernel,
-                                      r"(?x)
-                                      (?P<kernel_name>\S+)
-                                      \s+
-                                      (?P<kernel_version>\S+)".to_string());
+    let re_kernel = match_regex(&kernel,
+                                r"(?x)
+                                (?P<kernel_name>\S+)
+                                \s+
+                                (?P<kernel_version>\S+)".to_string());
     let kernel = re_kernel.name("kernel_version").unwrap().as_str();
 
     // Parse total/used RAM
-    let re_memory = get_regex_capture(&memory,
-                                      r"(?x)
-                                      Mem:
-                                      \s+
-                                      (?P<total>\d+)
-                                      \s+
-                                      (?P<used>\d+)
-                                      ".to_string());
+    let re_memory = match_regex(&memory,
+                                r"(?x)
+                                Mem:
+                                \s+
+                                (?P<total>\d+)
+                                \s+
+                                (?P<used>\d+)
+                                ".to_string());
     let total_mem = re_memory.name("total").unwrap().as_str();
     let used_mem = re_memory.name("used").unwrap().as_str();
 
@@ -105,7 +105,7 @@ fn print_data(key: &str, value: &str) {
 }
 
 // Search with Regex in a string and return all of the matches
-fn get_regex_capture(search_str: &String, regex: String) -> Captures {
+fn match_regex(search_str: &String, regex: String) -> Captures {
     let re = Regex::new(&regex).unwrap();
 
     re.captures(&search_str).unwrap()

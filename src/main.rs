@@ -7,10 +7,11 @@ fn main() {
     // Fetch the system data with command calls
     let username = run_command("whoami", vec!());
     let hostname = run_command("cat", vec!("/etc/hostname"));
-
-    // Fetch the uptime in hours/minutes
     let uptime = run_command("uptime", vec!());
+    let kernel = run_command("uname", vec!("-mrs"));
+    let memory = run_command("free", vec!("-m"));
 
+    // Parse the uptime in hours/minutes
     let re_uptime = get_regex_capture(&uptime,
                                       r"(?x)
                                       (?P<hours>\d+)
@@ -21,9 +22,15 @@ fn main() {
     let hours = re_uptime.name("hours").unwrap().as_str();
     let minutes = re_uptime.name("minutes").unwrap().as_str();
 
-    // Fetch total/used RAM
-    let memory = run_command("free", vec!("-m"));
+    // Parse the kernel
+    let re_kernel = get_regex_capture(&kernel,
+                                      r"(?x)
+                                      (?P<kernel_name>\S+)
+                                      \s+
+                                      (?P<kernel_version>\S+)".to_string());
+    let kernel = re_kernel.name("kernel_version").unwrap().as_str();
 
+    // Parse total/used RAM
     let re_memory = get_regex_capture(&memory,
                                       r"(?x)
                                       Mem:
@@ -37,7 +44,6 @@ fn main() {
 
 
     // Print the system data
-    // Username + Hostname
     println!("{color}{bold}{user}{reset}@{color}{bold}{host}{reset}",
              user = username,
              host = hostname,
@@ -45,14 +51,19 @@ fn main() {
              bold = colors::bold,
              reset = colors::reset,
              );
-    // Uptime
+
     println!("{}", format_data(
             "uptime",
             &format!("{hours}h / {minutes}m",
                      hours = hours,
                      minutes = minutes)
             ));
-    // Memory
+
+    println!("{}", format_data(
+            "kernel",
+            &kernel
+            ));
+
     println!("{}", format_data(
             "memory",
             &format!("{total}m / {used}m",
@@ -62,7 +73,7 @@ fn main() {
 }
 
 fn format_data(key: &str, value: &str) -> String {
-    format!("{color}{bold}{key}{reset} {value}",
+    format!("{color}{bold}{key:6}{reset} {value}",
             key = key,
             value = value,
             color = colors::green,

@@ -10,9 +10,11 @@ fn main() {
     let uptime = run_command("uptime", vec!());
     let kernel = run_command("uname", vec!("-mrs"));
     let memory = run_command("free", vec!("-m"));
-    let distro_data = run_command("bash", vec!("-c",
-                                               "cat /etc/*-release",
-                                               ));
+    let distro_data = run_command("/bin/sh", vec!("-c",
+                                                  "cat /etc/*-release",
+                                                  ));
+    let shell = run_command("/bin/sh", vec!("-c",
+                                            "echo $SHELL"));
 
     // Parse the distro name
     let re_distro = get_regex_capture(&distro_data,
@@ -21,6 +23,14 @@ fn main() {
                                       (?P<distro_name>[^\n]+)\n
                                       ".to_string());
     let distro_name = re_distro.name("distro_name").unwrap().as_str();
+
+    // Parse shell
+    let re_shell = get_regex_capture(&shell,
+                                     r"(?x)
+                                     ^/usr/bin/
+                                     (?P<shell_name>[^\n]+)$
+                                     ".to_string());
+    let shell = re_shell.name("shell_name").unwrap().as_str();
 
     // Parse the uptime in hours/minutes
     let re_uptime = get_regex_capture(&uptime,
@@ -71,6 +81,11 @@ fn main() {
     println!("{}", format_data(
             "kernel",
             &kernel
+            ));
+
+    println!("{}", format_data(
+            "shell",
+            &shell
             ));
 
     println!("{}", format_data(

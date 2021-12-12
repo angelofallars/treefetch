@@ -73,44 +73,44 @@ fn main() {
              reset = colors::reset,
              );
 
-    println!("{}", format_data(
+    print_data(
              "os",
              &distro_name
-             ));
+             );
 
-    println!("{}", format_data(
+    print_data(
             "kernel",
             &kernel
-            ));
+            );
 
-    println!("{}", format_data(
+    print_data(
             "shell",
             &shell
-            ));
+            );
 
-    println!("{}", format_data(
+    print_data(
             "uptime",
             &format!("{hours}h {minutes}m",
                      hours = hours,
                      minutes = minutes)
-            ));
+            );
 
-    println!("{}", format_data(
+    print_data(
             "memory",
             &format!("{used}m / {total}m",
                      used = used_mem,
                      total = total_mem)
-            ));
+            );
 }
 
-fn format_data(key: &str, value: &str) -> String {
-    format!("{color}{bold}{key:6}{reset} {value}",
+fn print_data(key: &str, value: &str) {
+    println!("{color}{bold}{key:6}{reset} {value}",
             key = key,
             value = value,
             color = colors::green,
             bold = colors::bold,
             reset = colors::reset,
-            ).to_string()
+            );
 }
 
 // Search with Regex in a string and return all of the matches

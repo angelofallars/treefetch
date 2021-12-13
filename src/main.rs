@@ -18,47 +18,47 @@ fn main() {
 
     // Parse the distro name
     let re_distro = match_regex(&distro_data,
-                                r"(?x)
+                                r#"(?x)
                                 DISTRIB_DESCRIPTION=
                                 (?P<distro_name>[^\n]+)\n
-                                ".to_string());
+                                "#.to_string());
     let distro_name = re_distro.name("distro_name").unwrap().as_str();
 
     // Parse shell
     let re_shell = match_regex(&shell,
-                               r"(?x)
+                               r#"(?x)
                                (?P<shell_name>[^/]+)$
-                               ".to_string());
+                               "#.to_string());
     let shell = re_shell.name("shell_name").unwrap().as_str();
 
     // Parse the uptime in hours/minutes
     let re_uptime = match_regex(&uptime,
-                                r"(?x)
+                                r#"(?x)
                                 (?P<hours>\d+)
                                 :
                                 (?P<minutes>\d+)
                                 ,
-                                ".to_string());
+                                "#.to_string());
     let hours = re_uptime.name("hours").unwrap().as_str();
     let minutes = re_uptime.name("minutes").unwrap().as_str();
 
     // Parse the kernel
     let re_kernel = match_regex(&kernel,
-                                r"(?x)
+                                r#"(?x)
                                 (?P<kernel_name>\S+)
                                 \s+
-                                (?P<kernel_version>\S+)".to_string());
+                                (?P<kernel_version>\S+)"#.to_string());
     let kernel = re_kernel.name("kernel_version").unwrap().as_str();
 
     // Parse total/used RAM
     let re_memory = match_regex(&memory,
-                                r"(?x)
+                                r#"(?x)
                                 Mem:
                                 \s+
                                 (?P<total>\d+)
                                 \s+
                                 (?P<used>\d+)
-                                ".to_string());
+                                "#.to_string());
     let total_mem = re_memory.name("total").unwrap().as_str();
     let used_mem = re_memory.name("used").unwrap().as_str();
 

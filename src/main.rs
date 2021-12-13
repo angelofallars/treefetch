@@ -51,30 +51,11 @@ fn main() {
 
     // Uptime
 
-    let uptime = run_command("cat", vec!("/proc/uptime"));
-    let re_uptime = match_regex(&uptime,
-                                r#"(?x)
-                                ^(?P<uptime_seconds>\d+)\.
-                                "#.to_string());
+    match fields::get_uptime() {
+        Ok(value) => data_list.push(value),
+        Err(_) => {}
+    };
 
-    if re_uptime.is_some() {
-        let re_uptime = re_uptime.unwrap();
-
-        let uptime_seconds: u32 = re_uptime
-            .name("uptime_seconds")
-            .unwrap()
-            .as_str()
-            .parse()
-            .unwrap();
-        let uptime_hours: u32 = uptime_seconds / (60 * 60);
-        let uptime_minutes: u32 = (uptime_seconds % (60 * 60)) / 60;
-        data_list.push(format_data(
-                "uptime",
-                &format!("{hours}h {minutes}m",
-                         hours = uptime_hours,
-                         minutes = uptime_minutes)
-                ));
-    }
 
     // Memory
 

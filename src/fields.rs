@@ -164,12 +164,12 @@ pub fn get_kernel() -> Result<String, String> {
 
     if re_kernel.is_none() {
         return Err("Error".to_string());
-    } else {
-        let re_kernel = re_kernel.unwrap();
-
-        let kernel = re_kernel.name("kernel_version").unwrap().as_str();
-        return Ok(format_data("kernel", &kernel));
     }
+
+    let re_kernel = re_kernel.unwrap();
+
+    let kernel = re_kernel.name("kernel_version").unwrap().as_str();
+    return Ok(format_data("kernel", &kernel));
 }
 
 pub fn get_shell() -> Result<String, String> {
@@ -194,4 +194,53 @@ pub fn get_shell() -> Result<String, String> {
 
     let shell = re_shell.name("shell_name").unwrap().as_str();
     return Ok(format_data("shell", &shell));
+}
+
+pub fn get_uptime() -> Result<String, String> {
+    // Get the uptime file
+    let uptime_file = fs::File::open("/proc/uptime");
+
+    // Return if can't find it
+    if uptime_file.is_err() {
+        return Err("Error".to_string());
+    }
+
+    let mut uptime_file = uptime_file.unwrap();
+    let mut uptime = String::new();
+
+    let result = uptime_file.read_to_string(&mut uptime);
+
+    if result.is_err() {
+        return Err("error".to_string());
+    }
+
+    let re_uptime = match_regex(&uptime,
+                                r#"(?x)
+                                ^(?P<uptime_seconds>\d+)\.
+                                "#.to_string());
+
+    if re_uptime.is_none() {
+        return Err("error".to_string());
+    }
+
+    let re_uptime = re_uptime.unwrap();
+
+    // Parse the uptime in seconds into an integer
+    let uptime_seconds: u32 = re_uptime
+        .name("uptime_seconds")
+        .unwrap()
+        .as_str()
+        .parse()
+        .unwrap();
+
+    // Calculate the uptime in hours and minutes respectively
+    let uptime_hours: u32 = uptime_seconds / (60 * 60);
+    let uptime_minutes: u32 = (uptime_seconds % (60 * 60)) / 60;
+
+    return Ok(format_data(
+            "uptime",
+            &format!("{hours}h {minutes}m",
+                     hours = uptime_hours,
+                     minutes = uptime_minutes)
+            ));
 }

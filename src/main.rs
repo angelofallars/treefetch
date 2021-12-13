@@ -4,6 +4,22 @@ mod colors;
 
 // Simple system fetch tool written in Rust.
 fn main() {
+    let ascii_tree = format!("{green}     /\\*\\      {reset}
+{green}    /\\O\\*\\     {reset}
+{green}   /*/\\/\\/\\    {reset}
+{green}  /\\O\\/\\*\\/\\   {reset}
+{green} /\\*\\/\\*\\/\\/\\  {reset}
+{green} |O\\/\\/*/\\/O|  {reset}
+{yellow}      ||       {reset}
+{yellow}      ||       {reset}
+",
+    green = colors::green,
+    yellow = colors::yellow,
+    reset = colors::reset,
+);
+
+    let ascii_tree = split_by_newline(ascii_tree);
+
     // Fetch the system data with command calls
     let username = run_command("whoami", vec!());
     let hostname = run_command("cat", vec!("/etc/hostname"));
@@ -64,43 +80,82 @@ fn main() {
 
 
     // Print the system data
-    println!("{color}{bold}{user}{reset}{bold}@{color}{host}{reset}",
+    let mut data_list: Vec<String> = Vec::new();
+
+    data_list.push(format!("{color}{bold}{user}{reset}{bold}@{color}{host}{reset}",
              user = username,
              host = hostname,
              color = colors::green,
              bold = colors::bold,
              reset = colors::reset,
-             );
+             ));
 
-    print_data("os", &distro_name);
+    data_list.push(format_data("os", &distro_name));
 
-    print_data("kernel", &kernel);
+    data_list.push(format_data("kernel", &kernel));
 
-    print_data("shell", &shell);
+    data_list.push(format_data("shell", &shell));
 
-    print_data(
+    data_list.push(format_data(
         "uptime",
         &format!("{hours}h {minutes}m",
                  hours = hours,
                  minutes = minutes)
-        );
+        ));
 
-    print_data(
+    data_list.push(format_data(
         "memory",
         &format!("{used}m / {total}m",
                  used = used_mem,
                  total = total_mem)
-        );
+        ));
+
+    print_left_to_right(ascii_tree, data_list);
 }
 
-fn print_data(key: &str, value: &str) {
-    println!("{color}{bold}{key:6}{reset} {value}",
+// Print two vectors of strings side to side
+fn print_left_to_right(left: Vec<String>, right: Vec<String>) {
+    let left_len = left.len();
+    let right_len = right.len();
+    let max_len = if left_len > right_len {left_len} else {right_len};
+
+    for i in 0..max_len {
+        if i < left_len {
+            print!("{}", left[i].replace("\n", ""));
+        }
+        if i < right_len {
+            print!("{}", right[i].trim());
+        }
+
+        // Print a newline
+        println!("");
+    }
+}
+
+fn split_by_newline(ascii_art: String) -> Vec<String> {
+    let mut split: Vec<String> = Vec::new();
+    let mut last_index = 0;
+
+    let bytes = ascii_art.as_bytes();
+
+    for (i, &item) in bytes.iter().enumerate() {
+        if item == b'\n' {
+            split.push(ascii_art[last_index..i].to_string());
+            last_index = i;
+        }
+    }
+
+    split
+}
+
+fn format_data(key: &str, value: &str) -> String {
+    format!("{color}{bold}{key:6}{reset} {value}",
             key = key,
             value = value,
             color = colors::green,
             bold = colors::bold,
             reset = colors::reset,
-            );
+            )
 }
 
 // Search with Regex in a string and return all of the matches

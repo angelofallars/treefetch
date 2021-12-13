@@ -4,14 +4,14 @@ mod colors;
 
 // Simple system fetch tool written in Rust.
 fn main() {
-    let ascii_tree = format!("{green}     /\\*\\      {reset}
-{green}    /\\O\\*\\     {reset}
-{green}   /*/\\/\\/\\    {reset}
-{green}  /\\O\\/\\*\\/\\   {reset}
-{green} /\\*\\/\\*\\/\\/\\  {reset}
-{green} |O\\/\\/*/\\/O|  {reset}
-{yellow}      ||       {reset}
-{yellow}      ||       {reset}
+    let ascii_tree = format!("{green}     /\\*\\       {reset}
+{green}    /\\O\\*\\      {reset}
+{green}   /*/\\/\\/\\     {reset}
+{green}  /\\O\\/\\*\\/\\    {reset}
+{green} /\\*\\/\\*\\/\\/\\   {reset}
+{green} |O\\/\\/*/\\/O|   {reset}
+{yellow}      ||        {reset}
+{yellow}      ||        {reset}
 ",
     green = colors::green,
     yellow = colors::yellow,

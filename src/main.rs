@@ -82,13 +82,14 @@ fn main() {
     // Print the system data
     let mut data_list: Vec<String> = Vec::new();
 
-    data_list.push(format!("{color}{bold}{user}{reset}{bold}@{color}{host}{reset}",
+    data_list.push(format!("{color}{bold}{user}{reset}
+                            {bold}@{color}{host}{reset}",
              user = username,
              host = hostname,
              color = colors::green,
              bold = colors::bold,
              reset = colors::reset,
-             ));
+             ).replace(" ", "").replace("\n", ""));
 
     data_list.push(format_data("os", &distro_name));
 

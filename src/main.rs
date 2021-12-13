@@ -17,77 +17,14 @@ fn main() {
     yellow = colors::yellow,
     reset = colors::reset,
 );
-
     let ascii_tree = split_by_newline(ascii_tree);
 
-    // Fetch the system data with command calls
-    let username = run_command("whoami", vec!());
-    let hostname = run_command("cat", vec!("/etc/hostname"));
-    let uptime = run_command("cat", vec!("/proc/uptime"));
-    let kernel = run_command("uname", vec!("-mrs"));
-    let memory = run_command("free", vec!("-m"));
-    let distro_data = run_command("/bin/sh", vec!("-c",
-                                                  "cat /etc/*-release",
-                                                  ));
-    let shell = run_command("/bin/sh", vec!("-c",
-                                            "echo $SHELL"));
-
-    // Parse the distro name
-    let re_distro = match_regex(&distro_data,
-                                r#"(?x)
-                                DISTRIB_DESCRIPTION=
-                                "?   # Quotes if description is multiple words
-                                (?P<distro_name>[^\n"]+)
-                                "?   # Ditto
-                                \n
-                                "#.to_string());
-    let distro_name = re_distro.name("distro_name").unwrap().as_str();
-
-    // Parse shell
-    let re_shell = match_regex(&shell,
-                               r#"(?x)
-                               (?P<shell_name>[^/]+)$
-                               "#.to_string());
-    let shell = re_shell.name("shell_name").unwrap().as_str();
-
-    // Parse the uptime in hours/minutes
-    let re_uptime = match_regex(&uptime,
-                                r#"(?x)
-                                ^(?P<uptime_seconds>\d+)\.
-                                "#.to_string());
-    let uptime_seconds: u32 = re_uptime
-                              .name("uptime_seconds")
-                              .unwrap()
-                              .as_str()
-                              .parse()
-                              .unwrap();
-    let uptime_hours: u32 = uptime_seconds / (60 * 60);
-    let uptime_minutes: u32 = (uptime_seconds % (60 * 60)) / 60;
-
-    // Parse the kernel
-    let re_kernel = match_regex(&kernel,
-                                r#"(?x)
-                                (?P<kernel_name>\S+)
-                                \s+
-                                (?P<kernel_version>\S+)"#.to_string());
-    let kernel = re_kernel.name("kernel_version").unwrap().as_str();
-
-    // Parse total/used RAM
-    let re_memory = match_regex(&memory,
-                                r#"(?x)
-                                Mem:
-                                \s+
-                                (?P<total>\d+)
-                                \s+
-                                (?P<used>\d+)
-                                "#.to_string());
-    let total_mem = re_memory.name("total").unwrap().as_str();
-    let used_mem = re_memory.name("used").unwrap().as_str();
-
-
-    // Print the system data
     let mut data_list: Vec<String> = Vec::new();
 
+    // Username / Hostname
+
+    let username = run_command("whoami", vec!());
+    let hostname = run_command("cat", vec!("/etc/hostname"));
     let user_host_name = format!("{color}{bold}{user}{reset}
                                  {bold}@{color}{host}{reset}",
                                  user = username,
@@ -96,11 +33,12 @@ fn main() {
                                  bold = colors::bold,
                                  reset = colors::reset,
                                  ).replace(" ", "").replace("\n", "");
-
     data_list.push(user_host_name);
+
 
     // Separator
     // format: username length + @ (1) + hostname length
+
     let user_host_name_len = username.len() + 1 + hostname.len();
     let mut separator = String::new();
 
@@ -112,25 +50,109 @@ fn main() {
 
     data_list.push(separator);
 
-    data_list.push(format_data("os", &distro_name));
+    // Distro name
 
-    data_list.push(format_data("kernel", &kernel));
+    let distro_data = run_command("/bin/sh", vec!("-c",
+                                                  "cat /etc/*-release",
+                                                  ));
+    let re_distro = match_regex(&distro_data,
+                                r#"(?x)
+                                DISTRIB_DESCRIPTION=
+                                "?   # Quotes if description is multiple words
+                                (?P<distro_name>[^\n"]+)
+                                "?   # Ditto
+                                \n
+                                "#.to_string());
 
-    data_list.push(format_data("shell", &shell));
+    if !re_distro.is_none() {
+        let re_distro = re_distro.unwrap();
 
-    data_list.push(format_data(
-        "uptime",
-        &format!("{hours}h {minutes}m",
-                 hours = uptime_hours,
-                 minutes = uptime_minutes)
-        ));
+        let distro_name = re_distro.name("distro_name").unwrap().as_str();
+        data_list.push(format_data("os", &distro_name));
+    }
 
-    data_list.push(format_data(
-        "memory",
-        &format!("{used}m / {total}m",
-                 used = used_mem,
-                 total = total_mem)
-        ));
+    // Kernel name
+
+    let kernel = run_command("uname", vec!("-mrs"));
+    let re_kernel = match_regex(&kernel,
+                                r#"(?x)
+                                (?P<kernel_name>\S+)
+                                \s+
+                                (?P<kernel_version>\S+)"#.to_string());
+
+    if !re_kernel.is_none() {
+        let re_kernel = re_kernel.unwrap();
+
+        let kernel = re_kernel.name("kernel_version").unwrap().as_str();
+        data_list.push(format_data("kernel", &kernel));
+    }
+
+    // Shell
+
+    let shell = run_command("/bin/sh", vec!("-c",
+                                            "echo $SHELL"));
+    let re_shell = match_regex(&shell,
+                               r#"(?x)
+                               (?P<shell_name>[^/]+)$
+                               "#.to_string());
+
+    if !re_shell.is_none() {
+        let re_shell = re_shell.unwrap();
+
+        let shell = re_shell.name("shell_name").unwrap().as_str();
+        data_list.push(format_data("shell", &shell));
+    }
+
+    // Uptime
+
+    let uptime = run_command("cat", vec!("/proc/uptime"));
+    let re_uptime = match_regex(&uptime,
+                                r#"(?x)
+                                ^(?P<uptime_seconds>\d+)\.
+                                "#.to_string());
+
+    if !re_uptime.is_none() {
+        let re_uptime = re_uptime.unwrap();
+
+        let uptime_seconds: u32 = re_uptime
+            .name("uptime_seconds")
+            .unwrap()
+            .as_str()
+            .parse()
+            .unwrap();
+        let uptime_hours: u32 = uptime_seconds / (60 * 60);
+        let uptime_minutes: u32 = (uptime_seconds % (60 * 60)) / 60;
+        data_list.push(format_data(
+                "uptime",
+                &format!("{hours}h {minutes}m",
+                         hours = uptime_hours,
+                         minutes = uptime_minutes)
+                ));
+    }
+
+    // Memory
+
+    let memory = run_command("free", vec!("-m"));
+    let re_memory = match_regex(&memory,
+                                r#"(?x)
+                                Mem:
+                                \s+
+                                (?P<total>\d+)
+                                \s+
+                                (?P<used>\d+)
+                                "#.to_string());
+    if !re_memory.is_none() {
+        let re_memory = re_memory.unwrap();
+
+        let total_mem = re_memory.name("total").unwrap().as_str();
+        let used_mem = re_memory.name("used").unwrap().as_str();
+        data_list.push(format_data(
+                "memory",
+                &format!("{used}m / {total}m",
+                         used = used_mem,
+                         total = total_mem)
+                ));
+    }
 
     print_left_to_right(ascii_tree, data_list);
 }
@@ -182,10 +204,10 @@ fn format_data(key: &str, value: &str) -> String {
 }
 
 // Search with Regex in a string and return all of the matches
-fn match_regex(search_str: &String, regex: String) -> Captures {
+fn match_regex(search_str: &String, regex: String) -> Option<Captures> {
     let re = Regex::new(&regex).unwrap();
 
-    re.captures(&search_str).unwrap()
+    re.captures(&search_str)
 }
 
 // Run a command and return the output

@@ -44,19 +44,10 @@ fn main() {
 
     // Shell
 
-    let shell = run_command("/bin/sh", vec!("-c",
-                                            "echo $SHELL"));
-    let re_shell = match_regex(&shell,
-                               r#"(?x)
-                               (?P<shell_name>[^/]+)$
-                               "#.to_string());
-
-    if re_shell.is_some() {
-        let re_shell = re_shell.unwrap();
-
-        let shell = re_shell.name("shell_name").unwrap().as_str();
-        data_list.push(format_data("shell", &shell));
-    }
+    match fields::get_shell() {
+        Ok(value) => data_list.push(value),
+        Err(_) => {}
+    };
 
     // Uptime
 

@@ -171,3 +171,27 @@ pub fn get_kernel() -> Result<String, String> {
         return Ok(format_data("kernel", &kernel));
     }
 }
+
+pub fn get_shell() -> Result<String, String> {
+    let shell_env = env::var_os("SHELL");
+
+    if shell_env.is_none() {
+        return Err("Error".to_string());
+    }
+
+    let shell = shell_env.unwrap().into_string().unwrap();
+
+    let re_shell = match_regex(&shell,
+                               r#"(?x)
+                               (?P<shell_name>[^/]+)$
+                               "#.to_string());
+
+    if re_shell.is_none() {
+        return Err("Error".to_string());
+    }
+
+    let re_shell = re_shell.unwrap();
+
+    let shell = re_shell.name("shell_name").unwrap().as_str();
+    return Ok(format_data("shell", &shell));
+}

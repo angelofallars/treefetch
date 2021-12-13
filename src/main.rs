@@ -64,7 +64,7 @@ fn main() {
 
 
     // Print the system data
-    println!("{color}{bold}{user}{reset}@{color}{bold}{host}{reset}",
+    println!("{color}{bold}{user}{reset}{bold}@{color}{host}{reset}",
              user = username,
              host = hostname,
              color = colors::green,

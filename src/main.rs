@@ -1,4 +1,7 @@
 use std::process::Command;
+use std::io::Read;
+use std::env;
+use std::fs;
 use regex::{Regex, Captures};
 mod colors;
 
@@ -23,32 +26,47 @@ fn main() {
 
     // Username / Hostname
 
-    let username = run_command("whoami", vec!());
-    let hostname = run_command("cat", vec!("/etc/hostname"));
-    let user_host_name = format!("{color}{bold}{user}{reset}
-                                 {bold}@{color}{host}{reset}",
-                                 user = username,
-                                 host = hostname,
-                                 color = colors::green,
-                                 bold = colors::bold,
-                                 reset = colors::reset,
-                                 ).replace(" ", "").replace("\n", "");
-    data_list.push(user_host_name);
+    {
+        let username_env = env::var_os("USER");
+        let username: String;
 
+        if username_env.is_some() {
+            username = username_env.unwrap().into_string().unwrap();
+        } else {
+            username = String::new();
+        }
 
-    // Separator
-    // format: username length + @ (1) + hostname length
+        let mut hostname_file = fs::File::open("/etc/hostname").unwrap();
+        let mut hostname = String::new();
 
-    let user_host_name_len = username.len() + 1 + hostname.len();
-    let mut separator = String::new();
+        let result = hostname_file.read_to_string(&mut hostname);
 
-    separator += colors::yellow;
-    for _i in 0..(user_host_name_len) {
-        separator += "━";
+        if result.is_ok() {
+            let user_host_name = format!("{color}{bold}{user}{reset}
+                                         {bold}@{color}{host}{reset}",
+                                         user = username,
+                                         host = hostname,
+                                         color = colors::green,
+                                         bold = colors::bold,
+                                         reset = colors::reset,
+                                         ).replace(" ", "").replace("\n", "");
+            data_list.push(user_host_name);
+
+            // Separator
+            // format: username length + @ (1) + hostname length
+
+            let user_host_name_len = username.len() + 1 + hostname.len();
+            let mut separator = String::new();
+
+            separator += colors::yellow;
+            for _i in 0..(user_host_name_len) {
+                separator += "━";
+            }
+            separator += colors::reset;
+
+            data_list.push(separator);
+        }
     }
-    separator += colors::reset;
-
-    data_list.push(separator);
 
     // Distro name
 

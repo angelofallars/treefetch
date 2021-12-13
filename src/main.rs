@@ -23,7 +23,7 @@ fn main() {
     // Fetch the system data with command calls
     let username = run_command("whoami", vec!());
     let hostname = run_command("cat", vec!("/etc/hostname"));
-    let uptime = run_command("uptime", vec!());
+    let uptime = run_command("cat", vec!("/proc/uptime"));
     let kernel = run_command("uname", vec!("-mrs"));
     let memory = run_command("free", vec!("-m"));
     let distro_data = run_command("/bin/sh", vec!("-c",
@@ -50,13 +50,16 @@ fn main() {
     // Parse the uptime in hours/minutes
     let re_uptime = match_regex(&uptime,
                                 r#"(?x)
-                                (?P<hours>\d+)
-                                :
-                                (?P<minutes>\d+)
-                                ,
+                                ^(?P<uptime_seconds>\d+)\.
                                 "#.to_string());
-    let hours = re_uptime.name("hours").unwrap().as_str();
-    let minutes = re_uptime.name("minutes").unwrap().as_str();
+    let uptime_seconds: u32 = re_uptime
+                              .name("uptime_seconds")
+                              .unwrap()
+                              .as_str()
+                              .parse()
+                              .unwrap();
+    let uptime_hours: u32 = uptime_seconds / (60 * 60);
+    let uptime_minutes: u32 = (uptime_seconds % (60 * 60)) / 60;
 
     // Parse the kernel
     let re_kernel = match_regex(&kernel,
@@ -100,8 +103,8 @@ fn main() {
     data_list.push(format_data(
         "uptime",
         &format!("{hours}h {minutes}m",
-                 hours = hours,
-                 minutes = minutes)
+                 hours = uptime_hours,
+                 minutes = uptime_minutes)
         ));
 
     data_list.push(format_data(

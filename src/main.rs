@@ -20,7 +20,7 @@ fn main() {
     let re_distro = match_regex(&distro_data,
                                 r#"(?x)
                                 DISTRIB_DESCRIPTION=
-                                (?P<distro_name>[^\n]+)\n
+                                (?P<distro_name>[^\n"]+)\n
                                 "#.to_string());
     let distro_name = re_distro.name("distro_name").unwrap().as_str();
 

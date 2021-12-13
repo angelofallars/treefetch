@@ -68,26 +68,10 @@ fn main() {
         }
     }
 
-    // Distro name
-
-    let distro_data = run_command("/bin/sh", vec!("-c",
-                                                  "cat /etc/*-release",
-                                                  ));
-    let re_distro = match_regex(&distro_data,
-                                r#"(?x)
-                                DISTRIB_DESCRIPTION=
-                                "?   # Quotes if description is multiple words
-                                (?P<distro_name>[^\n"]+)
-                                "?   # Ditto
-                                \n
-                                "#.to_string());
-
-    if !re_distro.is_none() {
-        let re_distro = re_distro.unwrap();
-
-        let distro_name = re_distro.name("distro_name").unwrap().as_str();
-        data_list.push(format_data("os", &distro_name));
-    }
+    match get_distro_name() {
+        Ok(value) => data_list.push(value),
+        Err(_) => {}
+    };
 
     // Kernel name
 
@@ -173,6 +157,73 @@ fn main() {
     }
 
     print_left_to_right(ascii_tree, data_list);
+}
+
+fn get_distro_name() -> Result<String, String> {
+    // First get the lsb-release file
+    let lsb_release = fs::File::open("/etc/lsb-release");
+    let mut buffer = String::new();
+
+    // Check if lsb_release exists
+    if lsb_release.is_ok() {
+        // Read lsb_release into buffer
+        let mut lsb_release = lsb_release.unwrap();
+        let result = lsb_release.read_to_string(&mut buffer);
+
+        if result.is_err() { return Err("error".to_string()); }
+
+        // Match regex in buffer
+        let re_lsb = match_regex(&buffer,
+                                 r#"(?x)
+                                 DISTRIB_DESCRIPTION=
+                                 "?   # Quotes if description is multiple words
+                                 (?P<distro_name>[^\n"]+)
+                                 "?   # Ditto
+                                 \n
+                                 "#.to_string());
+
+        // Check if regex matches
+        if re_lsb.is_some() {
+            let re_lsb = re_lsb.unwrap();
+
+            let distro_name = re_lsb.name("distro_name")
+                .unwrap()
+                .as_str();
+            return Ok(format_data("os", &distro_name));
+        }
+    }
+
+    // If no lsb-release then fetch os-release
+    let os_release = fs::File::open("/etc/os-release");
+
+    if os_release.is_err() {
+        return Err("Error".to_string());
+    }
+
+    let mut os_release = os_release.unwrap();
+    let result = os_release.read_to_string(&mut buffer);
+
+    if result.is_err() { return Err("error".to_string()); }
+
+    let re_os = match_regex(&buffer,
+                            r#"(?x)
+                            PRETTY_NAME=
+                            "?   # Quotes if description is multiple words
+                            (?P<distro_name>[^\n"]+)
+                            "?   # Ditto
+                            \n
+                            "#.to_string());
+
+    if re_os.is_some() {
+        let re_os = re_os.unwrap();
+
+        let distro_name = re_os.name("distro_name")
+            .unwrap()
+            .as_str();
+        return Ok(format_data("os", &distro_name));
+    }
+
+    return Err("error".to_string());
 }
 
 // Print two vectors of strings side to side

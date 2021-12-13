@@ -172,7 +172,7 @@ fn split_by_newline(ascii_art: String) -> Vec<String> {
 }
 
 fn format_data(key: &str, value: &str) -> String {
-    format!("{color}●{bold} {key:7}{reset} {value}",
+    format!("{color}▪{bold} {key:7}{reset} {value}",
             key = key,
             value = value,
             color = colors::green,

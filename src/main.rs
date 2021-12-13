@@ -37,19 +37,10 @@ fn main() {
 
     // Kernel name
 
-    let kernel = run_command("uname", vec!("-mrs"));
-    let re_kernel = match_regex(&kernel,
-                                r#"(?x)
-                                (?P<kernel_name>\S+)
-                                \s+
-                                (?P<kernel_version>\S+)"#.to_string());
-
-    if re_kernel.is_some() {
-        let re_kernel = re_kernel.unwrap();
-
-        let kernel = re_kernel.name("kernel_version").unwrap().as_str();
-        data_list.push(format_data("kernel", &kernel));
-    }
+    match fields::get_kernel() {
+        Ok(value) => data_list.push(value),
+        Err(_) => {}
+    };
 
     // Shell
 

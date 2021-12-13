@@ -140,3 +140,34 @@ pub fn get_distro_name() -> Result<String, String> {
 
     return Err("error".to_string());
 }
+
+pub fn get_kernel() -> Result<String, String> {
+    let kernel_file = fs::File::open("/proc/version");
+
+    if kernel_file.is_err() {
+        return Err("Error".to_string());
+    }
+
+    let mut kernel_file = kernel_file.unwrap();
+    let mut kernel = String::new();
+
+    let result = kernel_file.read_to_string(&mut kernel);
+
+    if result.is_err() {
+        return Err("error".to_string());
+    }
+
+    let re_kernel = match_regex(&kernel,
+                                r#"(?x)
+                                Linux\sversion\s
+                                (?P<kernel_version>\S+)"#.to_string());
+
+    if re_kernel.is_none() {
+        return Err("Error".to_string());
+    } else {
+        let re_kernel = re_kernel.unwrap();
+
+        let kernel = re_kernel.name("kernel_version").unwrap().as_str();
+        return Ok(format_data("kernel", &kernel));
+    }
+}

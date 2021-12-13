@@ -24,49 +24,13 @@ fn main() {
 
     let mut data_list: Vec<String> = Vec::new();
 
-    // Username / Hostname
-
-    {
-        let username_env = env::var_os("USER");
-        let username: String;
-
-        if username_env.is_some() {
-            username = username_env.unwrap().into_string().unwrap();
-        } else {
-            username = String::new();
-        }
-
-        let mut hostname_file = fs::File::open("/etc/hostname").unwrap();
-        let mut hostname = String::new();
-
-        let result = hostname_file.read_to_string(&mut hostname);
-
-        if result.is_ok() {
-            let user_host_name = format!("{color}{bold}{user}{reset}
-                                         {bold}@{color}{host}{reset}",
-                                         user = username,
-                                         host = hostname,
-                                         color = colors::green,
-                                         bold = colors::bold,
-                                         reset = colors::reset,
-                                         ).replace(" ", "").replace("\n", "");
-            data_list.push(user_host_name);
-
-            // Separator
-            // format: username length + @ (1) + hostname length
-
-            let user_host_name_len = username.len() + 1 + hostname.len();
-            let mut separator = String::new();
-
-            separator += colors::yellow;
-            for _i in 0..(user_host_name_len) {
-                separator += "━";
-            }
-            separator += colors::reset;
-
-            data_list.push(separator);
-        }
-    }
+    match get_user_host_name() {
+        Ok(value) => {
+            data_list.push(value.0);
+            data_list.push(value.1);
+        },
+        Err(_) => {}
+    };
 
     match get_distro_name() {
         Ok(value) => data_list.push(value),
@@ -157,6 +121,59 @@ fn main() {
     }
 
     print_left_to_right(ascii_tree, data_list);
+}
+
+fn get_user_host_name() -> Result<(String, String), String> {
+    // Username
+    let username_env = env::var_os("USER");
+    let username: String;
+
+    if username_env.is_some() {
+        username = username_env.unwrap().into_string().unwrap();
+    } else {
+        username = String::new();
+    }
+
+    // Hostname
+    let hostname_file = fs::File::open("/etc/hostname");
+
+    if hostname_file.is_err() {
+        return Err("error".to_string());
+    }
+
+    let mut hostname_file = hostname_file.unwrap();
+    let mut hostname = String::new();
+
+    let result = hostname_file.read_to_string(&mut hostname);
+
+    if result.is_err() {
+        return Err("error".to_string());
+    }
+
+    // Combine username and hostname into a formatted string
+
+    let user_host_name = format!("{color}{bold}{user}{reset}
+                                 {bold}@{color}{host}{reset}",
+                                 user = username,
+                                 host = hostname,
+                                 color = colors::green,
+                                 bold = colors::bold,
+                                 reset = colors::reset,
+                                 ).replace(" ", "").replace("\n", "");
+
+    // Separator
+    // format: username length + @ (1) + hostname length
+
+    let user_host_name_len = username.len() + 1 + hostname.len();
+    let mut separator = String::new();
+
+    separator += colors::yellow;
+    for _i in 0..(user_host_name_len) {
+        separator += "━";
+    }
+    separator += colors::reset;
+
+    return Ok((user_host_name, separator));
 }
 
 fn get_distro_name() -> Result<String, String> {

@@ -44,7 +44,7 @@ fn main() {
                                 \s+
                                 (?P<kernel_version>\S+)"#.to_string());
 
-    if !re_kernel.is_none() {
+    if re_kernel.is_some() {
         let re_kernel = re_kernel.unwrap();
 
         let kernel = re_kernel.name("kernel_version").unwrap().as_str();
@@ -60,7 +60,7 @@ fn main() {
                                (?P<shell_name>[^/]+)$
                                "#.to_string());
 
-    if !re_shell.is_none() {
+    if re_shell.is_some() {
         let re_shell = re_shell.unwrap();
 
         let shell = re_shell.name("shell_name").unwrap().as_str();
@@ -75,7 +75,7 @@ fn main() {
                                 ^(?P<uptime_seconds>\d+)\.
                                 "#.to_string());
 
-    if !re_uptime.is_none() {
+    if re_uptime.is_some() {
         let re_uptime = re_uptime.unwrap();
 
         let uptime_seconds: u32 = re_uptime
@@ -105,7 +105,7 @@ fn main() {
                                 \s+
                                 (?P<used>\d+)
                                 "#.to_string());
-    if !re_memory.is_none() {
+    if re_memory.is_some() {
         let re_memory = re_memory.unwrap();
 
         let total_mem = re_memory.name("total").unwrap().as_str();

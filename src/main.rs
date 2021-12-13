@@ -85,14 +85,29 @@ fn main() {
     // Print the system data
     let mut data_list: Vec<String> = Vec::new();
 
-    data_list.push(format!("{color}{bold}{user}{reset}
-                            {bold}@{color}{host}{reset}",
-             user = username,
-             host = hostname,
-             color = colors::green,
-             bold = colors::bold,
-             reset = colors::reset,
-             ).replace(" ", "").replace("\n", ""));
+    let user_host_name = format!("{color}{bold}{user}{reset}
+                                 {bold}@{color}{host}{reset}",
+                                 user = username,
+                                 host = hostname,
+                                 color = colors::green,
+                                 bold = colors::bold,
+                                 reset = colors::reset,
+                                 ).replace(" ", "").replace("\n", "");
+
+    data_list.push(user_host_name);
+
+    // Separator
+    // format: username length + @ (1) + hostname length
+    let user_host_name_len = username.len() + 1 + hostname.len();
+    let mut separator = String::new();
+
+    separator += colors::yellow;
+    for _i in 0..(user_host_name_len) {
+        separator += "━";
+    }
+    separator += colors::reset;
+
+    data_list.push(separator);
 
     data_list.push(format_data("os", &distro_name));
 
@@ -125,10 +140,10 @@ fn print_left_to_right(left: Vec<String>, right: Vec<String>) {
 
     for i in 0..max_len {
         if i < left_len {
-            print!("{}", left[i].replace("\n", ""));
+            print!("{}", left[i]);
         }
         if i < right_len {
-            print!("{}", right[i].trim());
+            print!("{}", right[i]);
         }
 
         // Print a newline
@@ -136,6 +151,7 @@ fn print_left_to_right(left: Vec<String>, right: Vec<String>) {
     }
 }
 
+// Split a multi-line string into several ones separated by the newline
 fn split_by_newline(ascii_art: String) -> Vec<String> {
     let mut split: Vec<String> = Vec::new();
     let mut last_index = 0;
@@ -144,7 +160,7 @@ fn split_by_newline(ascii_art: String) -> Vec<String> {
 
     for (i, &item) in bytes.iter().enumerate() {
         if item == b'\n' {
-            split.push(ascii_art[last_index..i].to_string());
+            split.push(ascii_art[last_index..i].trim().to_string());
             last_index = i;
         }
     }
@@ -153,7 +169,7 @@ fn split_by_newline(ascii_art: String) -> Vec<String> {
 }
 
 fn format_data(key: &str, value: &str) -> String {
-    format!("{color}{bold}{key:6}{reset} {value}",
+    format!("{color}{bold}● {key:7}{reset} {value}",
             key = key,
             value = value,
             color = colors::green,

@@ -1,5 +1,3 @@
-use std::process::Command;
-use regex::{Regex, Captures};
 mod colors;
 mod fields;
 
@@ -100,39 +98,4 @@ fn split_by_newline(ascii_art: String) -> Vec<String> {
     }
 
     split
-}
-
-fn format_data(key: &str, value: &str) -> String {
-    format!("{color}▪{bold} {key:7}{reset} {value}",
-            key = key,
-            value = value,
-            color = colors::green,
-            bold = colors::bold,
-            reset = colors::reset,
-            )
-}
-
-// Search with Regex in a string and return all of the matches
-fn match_regex(search_str: &String, regex: String) -> Option<Captures> {
-    let re = Regex::new(&regex).unwrap();
-
-    re.captures(&search_str)
-}
-
-// Run a command and return the output
-fn run_command(command: &str, args: Vec<&str>) -> String {
-    // Initialize the process
-    let mut command = Command::new(command);
-    // Add the arguments
-    command.args(args);
-
-    // Run the command
-    let output = command
-                 .output()
-                 .expect("failed to execute process");
-
-    // Return the output (stdout)
-    let stdout = String::from_utf8(output.stdout)
-                 .unwrap();
-    stdout.trim().to_string()
 }

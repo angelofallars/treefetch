@@ -1,8 +1,10 @@
-# 🌳 treefetch
+# 🌳 `treefetch`
 
-A minimal system fetch tool made in **Rust**.
+A lightning-fast minimalist system fetch tool made in Rust. Made to practice my new Rust skills 🦀.
 
-![Rust](https://img.shields.io/badge/rust-%23000000.svg?style=for-the-badge&logo=rust&logoColor=white)
+<img src="https://user-images.githubusercontent.com/39676098/145742917-80ca0ec6-9120-4716-9cc9-cfeff4b9777f.png" alt="treefetch" width=380px>
+
+![Rust](https://img.shields.io/badge/built%20with%20rust-%23000000.svg?style=for-the-badge&logo=rust&logoColor=white)
 
 ## Requirements
 

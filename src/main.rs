@@ -1,9 +1,7 @@
 use std::process::Command;
-use std::io::Read;
-use std::env;
-use std::fs;
 use regex::{Regex, Captures};
 mod colors;
+mod fields;
 
 // Simple system fetch tool written in Rust.
 fn main() {
@@ -24,7 +22,7 @@ fn main() {
 
     let mut data_list: Vec<String> = Vec::new();
 
-    match get_user_host_name() {
+    match fields::get_user_host_name() {
         Ok(value) => {
             data_list.push(value.0);
             data_list.push(value.1);
@@ -32,7 +30,7 @@ fn main() {
         Err(_) => {}
     };
 
-    match get_distro_name() {
+    match fields::get_distro_name() {
         Ok(value) => data_list.push(value),
         Err(_) => {}
     };
@@ -121,126 +119,6 @@ fn main() {
     }
 
     print_left_to_right(ascii_tree, data_list);
-}
-
-fn get_user_host_name() -> Result<(String, String), String> {
-    // Username
-    let username_env = env::var_os("USER");
-    let username: String;
-
-    if username_env.is_some() {
-        username = username_env.unwrap().into_string().unwrap();
-    } else {
-        username = String::new();
-    }
-
-    // Hostname
-    let hostname_file = fs::File::open("/etc/hostname");
-
-    if hostname_file.is_err() {
-        return Err("error".to_string());
-    }
-
-    let mut hostname_file = hostname_file.unwrap();
-    let mut hostname = String::new();
-
-    let result = hostname_file.read_to_string(&mut hostname);
-
-    if result.is_err() {
-        return Err("error".to_string());
-    }
-
-    // Combine username and hostname into a formatted string
-
-    let user_host_name = format!("{color}{bold}{user}{reset}
-                                 {bold}@{color}{host}{reset}",
-                                 user = username,
-                                 host = hostname,
-                                 color = colors::green,
-                                 bold = colors::bold,
-                                 reset = colors::reset,
-                                 ).replace(" ", "").replace("\n", "");
-
-    // Separator
-    // format: username length + @ (1) + hostname length
-
-    let user_host_name_len = username.len() + 1 + hostname.len();
-    let mut separator = String::new();
-
-    separator += colors::yellow;
-    for _i in 0..(user_host_name_len) {
-        separator += "━";
-    }
-    separator += colors::reset;
-
-    return Ok((user_host_name, separator));
-}
-
-fn get_distro_name() -> Result<String, String> {
-    // First get the lsb-release file
-    let lsb_release = fs::File::open("/etc/lsb-release");
-    let mut buffer = String::new();
-
-    // Check if lsb_release exists
-    if lsb_release.is_ok() {
-        // Read lsb_release into buffer
-        let mut lsb_release = lsb_release.unwrap();
-        let result = lsb_release.read_to_string(&mut buffer);
-
-        if result.is_err() { return Err("error".to_string()); }
-
-        // Match regex in buffer
-        let re_lsb = match_regex(&buffer,
-                                 r#"(?x)
-                                 DISTRIB_DESCRIPTION=
-                                 "?   # Quotes if description is multiple words
-                                 (?P<distro_name>[^\n"]+)
-                                 "?   # Ditto
-                                 \n
-                                 "#.to_string());
-
-        // Check if regex matches
-        if re_lsb.is_some() {
-            let re_lsb = re_lsb.unwrap();
-
-            let distro_name = re_lsb.name("distro_name")
-                .unwrap()
-                .as_str();
-            return Ok(format_data("os", &distro_name));
-        }
-    }
-
-    // If no lsb-release then fetch os-release
-    let os_release = fs::File::open("/etc/os-release");
-
-    if os_release.is_err() {
-        return Err("Error".to_string());
-    }
-
-    let mut os_release = os_release.unwrap();
-    let result = os_release.read_to_string(&mut buffer);
-
-    if result.is_err() { return Err("error".to_string()); }
-
-    let re_os = match_regex(&buffer,
-                            r#"(?x)
-                            PRETTY_NAME=
-                            "?   # Quotes if description is multiple words
-                            (?P<distro_name>[^\n"]+)
-                            "?   # Ditto
-                            \n
-                            "#.to_string());
-
-    if re_os.is_some() {
-        let re_os = re_os.unwrap();
-
-        let distro_name = re_os.name("distro_name")
-            .unwrap()
-            .as_str();
-        return Ok(format_data("os", &distro_name));
-    }
-
-    return Err("error".to_string());
 }
 
 // Print two vectors of strings side to side

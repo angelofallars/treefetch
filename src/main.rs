@@ -27,8 +27,7 @@ fn main() {
     // Parse shell
     let re_shell = match_regex(&shell,
                                r"(?x)
-                               ^/usr/bin/
-                               (?P<shell_name>[^\n]+)$
+                               (?P<shell_name>[^/]+)$
                                ".to_string());
     let shell = re_shell.name("shell_name").unwrap().as_str();
 

@@ -244,3 +244,76 @@ pub fn get_uptime() -> Result<String, String> {
                      minutes = uptime_minutes)
             ));
 }
+
+pub fn get_memory() -> Result<String, String> {
+    // Get the memory file
+    let memory_file = fs::File::open("/proc/meminfo");
+
+    // Return if can't find it
+    if memory_file.is_err() {
+        return Err("Error".to_string());
+    }
+
+    let mut memory_file = memory_file.unwrap();
+    let mut memory = String::new();
+
+    let result = memory_file.read_to_string(&mut memory);
+
+    if result.is_err() {
+        return Err("error".to_string());
+    }
+
+    let re_total_memory = match_regex(&memory,
+                                      r#"(?x)
+                                      MemTotal:
+                                      \s+
+                                      (?P<mem_total>\d+)
+                                      .+\n.+\n
+                                      MemAvailable:
+                                      "#.to_string());
+
+    if re_total_memory.is_none() {
+        return Err("error".to_string());
+    }
+
+    let re_available_memory = match_regex(&memory,
+                                          r#"(?x)
+                                          MemAvailable:
+                                          \s+
+                                          (?P<mem_available>\d+)
+                                          "#.to_string());
+
+    if re_available_memory.is_none() {
+        return Err("error".to_string());
+    }
+
+    let re_total_memory = re_total_memory.unwrap();
+    let re_available_memory = re_available_memory.unwrap();
+
+    let total_mem: i32 = re_total_memory
+                         .name("mem_total")
+                         .unwrap()
+                         .as_str()
+                         .parse()
+                         .unwrap();
+
+    let available_mem: i32 = re_available_memory
+                             .name("mem_available")
+                             .unwrap()
+                             .as_str()
+                             .parse()
+                             .unwrap();
+
+    let used_mem = total_mem - available_mem;
+
+    // Divide memory by 1,000
+    let total_mem = total_mem / 1_024;
+    let used_mem = used_mem / 1_024;
+
+    return Ok(format_data(
+              "memory",
+              &format!("{used}m / {total}m",
+                       used = used_mem,
+                       total = total_mem)
+            ));
+}

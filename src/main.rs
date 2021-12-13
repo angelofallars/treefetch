@@ -56,30 +56,12 @@ fn main() {
         Err(_) => {}
     };
 
-
     // Memory
 
-    let memory = run_command("free", vec!("-m"));
-    let re_memory = match_regex(&memory,
-                                r#"(?x)
-                                Mem:
-                                \s+
-                                (?P<total>\d+)
-                                \s+
-                                (?P<used>\d+)
-                                "#.to_string());
-    if re_memory.is_some() {
-        let re_memory = re_memory.unwrap();
-
-        let total_mem = re_memory.name("total").unwrap().as_str();
-        let used_mem = re_memory.name("used").unwrap().as_str();
-        data_list.push(format_data(
-                "memory",
-                &format!("{used}m / {total}m",
-                         used = used_mem,
-                         total = total_mem)
-                ));
-    }
+    match fields::get_memory() {
+        Ok(value) => data_list.push(value),
+        Err(_) => {}
+    };
 
     print_left_to_right(ascii_tree, data_list);
 }

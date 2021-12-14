@@ -12,11 +12,16 @@ A great pair for [cbonsai](https://gitlab.com/jallbrit/cbonsai), to help you get
 
 ![Rust](https://img.shields.io/badge/rust-%23000000.svg?style=for-the-badge&logo=rust&logoColor=white)
 
-## Install (x86)
+## Install (Arch Linux)
+
+- `yay -S treefetch-bin`
+- `paru -S treefetch-bin`
+
+## Install (Binary)
 
 Download the latest binary release from the [releases section](https://github.com/angelofallars/treefetch/releases).
 
-## Compile & Install (source code)
+## Compiling Manually
 
 To compile and install treefetch manually, you first need to [install the Rust
 compiler](https://www.rust-lang.org/tools/install). When you do it this way,

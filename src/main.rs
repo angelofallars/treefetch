@@ -1,9 +1,10 @@
+use std::env;
 mod colors;
 mod fields;
 
 // Simple system fetch tool written in Rust.
 fn main() {
-    let ascii_tree = format!("{green}     /\\*\\       {reset}
+    let mut ascii_tree = format!("{green}     /\\*\\       {reset}
 {green}    /\\O\\*\\      {reset}
 {green}   /*/\\/\\/\\     {reset}
 {green}  /\\O\\/\\*\\/\\    {reset}
@@ -16,6 +17,29 @@ fn main() {
     yellow = colors::yellow,
     reset = colors::reset,
 );
+
+    // Christmas tree if passed with -xmas argument
+    let args: Vec<String> = env::args().collect();
+    if args.len() >= 2 && args[1] == "-xmas" {
+            ascii_tree = format!("{bright_yellow}{bold}      ★         {reset}
+{green}     /\\{red}{bold}o{green}\\       {reset}
+{green}    /\\{red}{bold}o{green}\\*\\      {reset}
+{green}   /{red}{bold}o{green}/\\/\\{blue}{bold}o{green}\\     {reset}
+{green}  /\\O\\/\\{red}{bold}o{green}\\/{red}{bold}o{green}    {reset}
+{green} /{blue}{bold}o{green}*{red}{bold}o{green}/{blue}{bold}o{green}*\\/{red}{bold}o{green}/\\   {reset}
+{green} |O\\/\\/*/{red}{bold}o{green}/O|   {reset}
+{yellow}      ||        {reset}
+    ",
+            red = colors::red,
+            green = colors::green,
+            blue = colors::blue,
+            yellow = colors::yellow,
+            bright_yellow = "\x1b[93m",
+            bold = colors::bold,
+            reset = colors::reset,
+            );
+    }
+
     let ascii_tree = split_by_newline(ascii_tree);
 
     let mut data_list: Vec<String> = Vec::new();

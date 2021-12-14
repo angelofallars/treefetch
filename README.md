@@ -6,6 +6,9 @@ A great pair for [cbonsai](https://gitlab.com/jallbrit/cbonsai), to help you get
 
 <img src="https://user-images.githubusercontent.com/39676098/145780007-f612ceff-7414-4bbe-af14-e2d48004ed9d.png" alt="treefetch" width=380px>
 
+**NEW:** Christmas mode with `treefetch -xmas`!
+
+<img src="https://user-images.githubusercontent.com/39676098/145915591-aff4cd4e-1792-4cac-b266-98575d6fa6b5.png" alt="treefetch christmas" width=380px>
 
 ![Rust](https://img.shields.io/badge/rust-%23000000.svg?style=for-the-badge&logo=rust&logoColor=white)
 

@@ -73,7 +73,7 @@ pub fn get_user_host_name(is_christmas: bool) -> Result<(String, String), String
     let mut separator = String::new();
 
     if is_christmas {
-        separator += colors::green;
+        separator += colors::reset;
     } else {
         separator += colors::yellow;
     }

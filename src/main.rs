@@ -107,7 +107,7 @@ fn print_left_to_right(left: Vec<String>, right: Vec<String>,
             // Red square if Christmas mode
             if is_christmas {
                 print!("{}", right[i]
-                       .replace("▪", 
+                       .replace("▪",
                                 &format!("{}▪{}",
                                          colors::red,
                                          colors::green)));

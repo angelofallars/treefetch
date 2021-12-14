@@ -21,7 +21,7 @@ fn match_regex(search_str: &String, regex: String) -> Option<Captures> {
     re.captures(&search_str)
 }
 
-pub fn get_user_host_name() -> Result<(String, String), String> {
+pub fn get_user_host_name(is_christmas: bool) -> Result<(String, String), String> {
     // Username
     let username_env = env::var_os("USER");
     let username: String;
@@ -49,12 +49,19 @@ pub fn get_user_host_name() -> Result<(String, String), String> {
     }
 
     // Combine username and hostname into a formatted string
+    let main_color: &str;
+
+    if is_christmas {
+        main_color = colors::red;
+    } else {
+        main_color = colors::green;
+    }
 
     let user_host_name = format!("{color}{bold}{user}{reset}
                                  {bold}@{color}{host}{reset}",
                                  user = username,
                                  host = hostname,
-                                 color = colors::green,
+                                 color = main_color,
                                  bold = colors::bold,
                                  reset = colors::reset,
                                  ).replace(" ", "").replace("\n", "");
@@ -65,7 +72,12 @@ pub fn get_user_host_name() -> Result<(String, String), String> {
     let user_host_name_len = username.len() + 1 + hostname.len();
     let mut separator = String::new();
 
-    separator += colors::yellow;
+    if is_christmas {
+        separator += colors::green;
+    } else {
+        separator += colors::yellow;
+    }
+
     for _i in 0..(user_host_name_len) {
         separator += "━";
     }

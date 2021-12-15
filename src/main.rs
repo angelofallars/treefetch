@@ -1,9 +1,10 @@
+use std::env;
 mod colors;
 mod fields;
 
 // Simple system fetch tool written in Rust.
 fn main() {
-    let ascii_tree = format!("{green}     /\\*\\       {reset}
+    let mut ascii_tree = format!("{green}     /\\*\\       {reset}
 {green}    /\\O\\*\\      {reset}
 {green}   /*/\\/\\/\\     {reset}
 {green}  /\\O\\/\\*\\/\\    {reset}
@@ -16,11 +17,37 @@ fn main() {
     yellow = colors::yellow,
     reset = colors::reset,
 );
+
+    // Christmas tree if passed with -xmas argument
+    let args: Vec<String> = env::args().collect();
+    let mut is_christmas = false;
+
+    if args.len() >= 2 && args[1] == "-xmas" {
+            ascii_tree = format!("{bright_yellow}{bold}      ★         {reset}
+{green}     /\\{red}{bold}o{green}\\       {reset}
+{green}    /\\{red}{bold}o{green}\\*\\      {reset}
+{green}   /{red}{bold}o{green}/\\/\\{blue}{bold}o{green}\\     {reset}
+{green}  /\\O\\/\\{red}{bold}o{green}\\/{red}{bold}o{green}    {reset}
+{green} /{blue}{bold}o{green}*{red}{bold}o{green}/{blue}{bold}o{green}*\\/{red}{bold}o{green}/\\   {reset}
+{green} |O\\/\\/*/{red}{bold}o{green}/O|   {reset}
+{yellow}      ||        {reset}
+    ",
+            red = colors::red,
+            green = colors::green,
+            blue = colors::blue,
+            yellow = colors::yellow,
+            bright_yellow = "\x1b[93m",
+            bold = colors::bold,
+            reset = colors::reset,
+            );
+            is_christmas = true;
+    }
+
     let ascii_tree = split_by_newline(ascii_tree);
 
     let mut data_list: Vec<String> = Vec::new();
 
-    match fields::get_user_host_name() {
+    match fields::get_user_host_name(is_christmas) {
         Ok(value) => {
             data_list.push(value.0);
             data_list.push(value.1);
@@ -61,11 +88,12 @@ fn main() {
         Err(_) => {}
     };
 
-    print_left_to_right(ascii_tree, data_list);
+    print_left_to_right(ascii_tree, data_list, is_christmas);
 }
 
 // Print two vectors of strings side to side
-fn print_left_to_right(left: Vec<String>, right: Vec<String>) {
+fn print_left_to_right(left: Vec<String>, right: Vec<String>,
+                       is_christmas: bool) {
     let left_len = left.len();
     let right_len = right.len();
     let max_len = if left_len > right_len {left_len} else {right_len};
@@ -75,7 +103,17 @@ fn print_left_to_right(left: Vec<String>, right: Vec<String>) {
             print!("{}", left[i]);
         }
         if i < right_len {
-            print!("{}", right[i]);
+
+            // Red square if Christmas mode
+            if is_christmas {
+                print!("{}", right[i]
+                       .replace("▪",
+                                &format!("{}▪{}",
+                                         colors::red,
+                                         colors::green)));
+            } else {
+                print!("{}", right[i]);
+            }
         }
 
         // Print a newline

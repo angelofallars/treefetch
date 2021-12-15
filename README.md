@@ -17,6 +17,12 @@ A great pair for [cbonsai](https://gitlab.com/jallbrit/cbonsai), to help you get
 - `yay -S treefetch-bin`
 - `paru -S treefetch-bin`
 
+## Install (Debian/Ubuntu)
+
+`pacstall -I treefetch-bin`
+
+Install Pacstall [here](https://github.com/pacstall/pacstall) (basically AUR for Debian-based distros)
+
 ## Install (Binary)
 
 Download the latest binary release from the [releases section](https://github.com/angelofallars/treefetch/releases).

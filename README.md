@@ -34,6 +34,15 @@ program anywhere.
 
 <img src="https://user-images.githubusercontent.com/39676098/145779840-59f1d0ef-7577-408c-a9fb-ce93b262c7df.png" alt="cbonsai and treefetch" width=600px>
 
+## Contributing
+
+**Contribute to treefetch and get your awesome profile picture displayed here!**
+
+<a href="https://github.com/angelofallars/treefetch/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=angelofallars/treefetch" />
+</a>
+
+*Made with [contrib.rocks](https://contrib.rocks).*
 
 ## License
 

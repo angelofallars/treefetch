@@ -46,4 +46,4 @@ program anywhere.
 
 ## License
 
-This program is licensed under the MIT License.
+This program is licensed under the GPLv3 License.

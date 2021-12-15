@@ -8,6 +8,12 @@ A great pair for [cbonsai](https://gitlab.com/jallbrit/cbonsai), to help you get
 
 ![Rust](https://img.shields.io/badge/rust-%23000000.svg?style=for-the-badge&logo=rust&logoColor=white)
 
+## Install (Debian/Ubuntu)
+
+`pacstall -I treefetch-bin`
+
+Pacstall can be installed from [here](https://github.com/pacstall/pacstall)
+
 ## Install (binary)
 
 Download the latest binary release from the [releases section](https://github.com/angelofallars/treefetch/releases).

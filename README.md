@@ -42,6 +42,9 @@ program anywhere.
 
 ## Contributing
 
+Just make sure to develop and make pull requests on the `dev` branch instead of
+the `main` branch.
+
 **Contribute to treefetch and get your awesome profile picture displayed here!**
 
 <a href="https://github.com/angelofallars/treefetch/graphs/contributors">

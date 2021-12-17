@@ -18,10 +18,39 @@ fn main() {
     reset = colors::reset,
 );
 
-    // Christmas tree if passed with -xmas argument
     let args: Vec<String> = env::args().collect();
     let mut is_christmas = false;
 
+
+    // bonsai tree if passed with -bonsai argument
+    if args.len() >= 2 && args[1] == "-bonsai" {
+    ascii_tree = format!(
+        "{green} {bold}             &               {reset}
+        {green}          && & &&             {reset}
+        {green}         &{yellow}_& & _/{green}&            {reset}
+        {yellow}{bold}           /~\\                {reset}
+        {green} &  & &{yellow}     /|                {reset}
+        {green} & {yellow}{bold}_&{reset}{green}&{yellow}   _\\_/|                {reset}
+        {green}&& {yellow}{bold}&{reset}{green}&&{yellow}_/    |\\                {reset}
+        {green}  &&{yellow}_|/{green}{bold} &{reset}{yellow}   \\~|{green}         && &   {reset}
+        {yellow}           \\//~\\{green}{bold}   &&{reset}{yellow} &&{green}&  {reset}
+        {yellow}            |/\\__/{green}& &{yellow}_/_{green}&&  {reset}
+        {yellow}              \\\\  /__{green}{bold}&{reset}{yellow}_{green}&&&    {reset}
+        {gray}        :{green}____{yellow}./~\\.{green}____{gray}:         {reset}
+        {gray}         \\___________/         {reset}
+        {gray}          (_)     (_)            {reset}
+        ",
+        gray = colors::gray,
+        green = colors::green,
+        yellow = colors::yellow,
+        reset = colors::reset,
+        bold = colors::bold,
+        );
+    
+    }
+    
+
+    // Christmas tree if passed with -xmas argument
     if args.len() >= 2 && args[1] == "-xmas" {
             ascii_tree = format!("{bright_yellow}{bold}      ★         {reset}
 {green}     /\\{red}{bold}o{green}\\       {reset}

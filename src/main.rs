@@ -46,9 +46,8 @@ fn main() {
         reset = colors::reset,
         bold = colors::bold,
         );
-    
     }
-    
+
 
     // Christmas tree if passed with -xmas argument
     if args.len() >= 2 && args[1] == "-xmas" {

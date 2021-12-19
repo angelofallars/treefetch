@@ -1,1 +1,3 @@
 /target
+pkg/
+*.tar.zst

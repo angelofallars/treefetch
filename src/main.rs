@@ -4,116 +4,109 @@ mod fields;
 
 // Simple system fetch tool written in Rust.
 fn main() {
-    let mut ascii_tree = format!("{green}     /\\*\\       {reset}
-{green}    /\\O\\*\\      {reset}
-{green}   /*/\\/\\/\\     {reset}
-{green}  /\\O\\/\\*\\/\\    {reset}
-{green} /\\*\\/\\*\\/\\/\\   {reset}
-{green} |O\\/\\/*/\\/O|   {reset}
-{yellow}      ||        {reset}
-{yellow}      ||        {reset}
-",
-    green = colors::green,
-    yellow = colors::yellow,
-    reset = colors::reset,
-);
+    let mut ascii_tree = format!(
+        "{green}     /\\*\\       {reset}
+        {green}    /\\O\\*\\      {reset}
+        {green}   /*/\\/\\/\\     {reset}
+        {green}  /\\O\\/\\*\\/\\    {reset}
+        {green} /\\*\\/\\*\\/\\/\\   {reset}
+        {green} |O\\/\\/*/\\/O|   {reset}
+        {yellow}      ||        {reset}
+        {yellow}      ||        {reset}
+        ",
+        green = colors::green,
+        yellow = colors::yellow,
+        reset = colors::reset,
+    );
 
     let args: Vec<String> = env::args().collect();
     let mut is_christmas = false;
 
-
-    // bonsai tree if passed with -bonsai argument
-    if args.len() >= 2 && args[1] == "-bonsai" {
-    ascii_tree = format!(
-        "{green} {bold}             &               {reset}
-        {green}          && & &&             {reset}
-        {green}         &{yellow}_& & _/{green}&            {reset}
-        {yellow}{bold}           /~\\                {reset}
-        {green} &  & &{yellow}     /|                {reset}
-        {green} & {yellow}{bold}_&{reset}{green}&{yellow}   _\\_/|                {reset}
-        {green}&& {yellow}{bold}&{reset}{green}&&{yellow}_/    |\\                {reset}
-        {green}  &&{yellow}_|/{green}{bold} &{reset}{yellow}   \\~|{green}         && &   {reset}
-        {yellow}           \\//~\\{green}{bold}   &&{reset}{yellow} &&{green}&  {reset}
-        {yellow}            |/\\__/{green}& &{yellow}_/_{green}&&  {reset}
-        {yellow}              \\\\  /__{green}{bold}&{reset}{yellow}_{green}&&&    {reset}
-        {gray}        :{green}____{yellow}./~\\.{green}____{gray}:         {reset}
-        {gray}         \\___________/         {reset}
-        {gray}          (_)     (_)            {reset}
-        ",
-        gray = colors::gray,
-        green = colors::green,
-        yellow = colors::yellow,
-        reset = colors::reset,
-        bold = colors::bold,
-        );
-    }
-
-
-    // Christmas tree if passed with -xmas argument
-    if args.len() >= 2 && args[1] == "-xmas" {
-            ascii_tree = format!("{bright_yellow}{bold}      ★         {reset}
-{green}     /\\{red}{bold}o{green}\\       {reset}
-{green}    /\\{red}{bold}o{green}\\*\\      {reset}
-{green}   /{red}{bold}o{green}/\\/\\{blue}{bold}o{green}\\     {reset}
-{green}  /\\O\\/\\{red}{bold}o{green}\\/{red}{bold}o{green}    {reset}
-{green} /{blue}{bold}o{green}*{red}{bold}o{green}/{blue}{bold}o{green}*\\/{red}{bold}o{green}/\\   {reset}
-{green} |O\\/\\/*/{red}{bold}o{green}/O|   {reset}
-{yellow}      ||        {reset}
-    ",
-            red = colors::red,
-            green = colors::green,
-            blue = colors::blue,
-            yellow = colors::yellow,
-            bright_yellow = "\x1b[93m",
-            bold = colors::bold,
-            reset = colors::reset,
+    if args.len() >= 2 {
+        // bonsai tree if passed with -bonsai argument
+        if args[1] == "-bonsai" || args[1] == "-b" {
+            ascii_tree = format!(
+                "{green} {bold}             &               {reset}
+                {green}          && & &&             {reset}
+                {green}         &{yellow}_& & _/{green}&            {reset}
+                {yellow}{bold}           /~\\                {reset}
+                {green} &  & &{yellow}     /|                {reset}
+                {green} & {yellow}{bold}_&{reset}{green}&{yellow}   _\\_/|                {reset}
+                {green}&& {yellow}{bold}&{reset}{green}&&{yellow}_/    |\\                {reset}
+                {green}  &&{yellow}_|/{green}{bold} &{reset}{yellow}   \\~|{green}         && &   {reset}
+                {yellow}           \\//~\\{green}{bold}   &&{reset}{yellow} &&{green}&  {reset}
+                {yellow}            |/\\__/{green}& &{yellow}_/_{green}&&  {reset}
+                {yellow}              \\\\  /__{green}{bold}&{reset}{yellow}_{green}&&&    {reset}
+                {gray}        :{green}____{yellow}./~\\.{green}____{gray}:         {reset}
+                {gray}         \\___________/         {reset}
+                {gray}          (_)     (_)            {reset}
+                ",
+                gray = colors::gray,
+                green = colors::green,
+                yellow = colors::yellow,
+                reset = colors::reset,
+                bold = colors::bold,
+            );
+        // Christmas tree if passed with -xmas argument
+        } else if args[1] == "-xmas" || args[1] == "-x" {
+            ascii_tree = format!(
+                "{bright_yellow}{bold}      ★         {reset}
+                {green}     /\\{red}{bold}o{green}\\       {reset}
+                {green}    /\\{red}{bold}o{green}\\*\\      {reset}
+                {green}   /{red}{bold}o{green}/\\/\\{blue}{bold}o{green}\\     {reset}
+                {green}  /\\O\\/\\{red}{bold}o{green}\\/{red}{bold}o{green}    {reset}
+                {green} /{blue}{bold}o{green}*{red}{bold}o{green}/{blue}{bold}o{green}*\\/{red}{bold}o{green}/\\   {reset}
+                {green} |O\\/\\/*/{red}{bold}o{green}/O|   {reset}
+                {yellow}      ||        {reset}
+                ",
+                red = colors::red,
+                green = colors::green,
+                blue = colors::blue,
+                yellow = colors::yellow,
+                bright_yellow = "\x1b[93m",
+                bold = colors::bold,
+                reset = colors::reset,
             );
             is_christmas = true;
+        }
     }
 
     let ascii_tree = split_by_newline(ascii_tree);
 
     let mut data_list: Vec<String> = Vec::new();
 
-    match fields::get_user_host_name(is_christmas) {
-        Ok(value) => {
+    if let Ok(value) = fields::get_user_host_name(is_christmas) {
             data_list.push(value.0);
             data_list.push(value.1);
-        },
-        Err(_) => {}
     };
 
-    match fields::get_distro_name() {
-        Ok(value) => data_list.push(value),
-        Err(_) => {}
+
+    if let Ok(value) = fields::get_distro_name() {
+        data_list.push(value);
     };
 
     // Kernel name
 
-    match fields::get_kernel() {
-        Ok(value) => data_list.push(value),
-        Err(_) => {}
+    if let Ok(value) = fields::get_kernel() {
+        data_list.push(value);
     };
 
     // Shell
 
-    match fields::get_shell() {
-        Ok(value) => data_list.push(value),
-        Err(_) => {}
+    if let Ok(value) = fields::get_shell() {
+        data_list.push(value);
     };
 
     // Uptime
 
-    match fields::get_uptime() {
-        Ok(value) => data_list.push(value),
-        Err(_) => {}
+    if let Ok(value) = fields::get_uptime() {
+        data_list.push(value);
     };
 
     // Memory
 
-    match fields::get_memory() {
-        Ok(value) => data_list.push(value),
-        Err(_) => {}
+    if let Ok(value) = fields::get_memory() {
+        data_list.push(value);
     };
 
     print_left_to_right(ascii_tree, data_list, is_christmas);
@@ -145,7 +138,7 @@ fn print_left_to_right(left: Vec<String>, right: Vec<String>,
         }
 
         // Print a newline
-        println!("");
+        println!();
     }
 }
 

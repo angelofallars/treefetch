@@ -15,10 +15,10 @@ fn format_data(key: &str, value: &str) -> String {
 }
 
 // Search with Regex in a string and return all of the matches
-fn match_regex(search_str: &String, regex: String) -> Option<Captures> {
+fn match_regex(search_str: &str, regex: String) -> Option<Captures> {
     let re = Regex::new(&regex).unwrap();
 
-    re.captures(&search_str)
+    re.captures(search_str)
 }
 
 pub fn get_user_host_name(is_christmas: bool) -> Result<(String, String), String> {
@@ -26,7 +26,7 @@ pub fn get_user_host_name(is_christmas: bool) -> Result<(String, String), String
     let username_env = env::var_os("USER");
     let username: String;
 
-    if username_env.is_some() {
+    if let Some(..) = username_env {
         username = username_env.unwrap().into_string().unwrap();
     } else {
         username = String::new();
@@ -83,7 +83,7 @@ pub fn get_user_host_name(is_christmas: bool) -> Result<(String, String), String
     }
     separator += colors::reset;
 
-    return Ok((user_host_name, separator));
+    Ok((user_host_name, separator))
 }
 
 pub fn get_distro_name() -> Result<String, String> {
@@ -92,7 +92,7 @@ pub fn get_distro_name() -> Result<String, String> {
     let mut buffer = String::new();
 
     // Check if lsb_release exists
-    if lsb_release.is_ok() {
+    if let Ok(..) = lsb_release {
         // Read lsb_release into buffer
         let mut lsb_release = lsb_release.unwrap();
         let result = lsb_release.read_to_string(&mut buffer);
@@ -110,13 +110,13 @@ pub fn get_distro_name() -> Result<String, String> {
                                  "#.to_string());
 
         // Check if regex matches
-        if re_lsb.is_some() {
+        if let Some(..) = re_lsb {
             let re_lsb = re_lsb.unwrap();
 
             let distro_name = re_lsb.name("distro_name")
                 .unwrap()
                 .as_str();
-            return Ok(format_data("os", &distro_name));
+            return Ok(format_data("os", distro_name));
         }
     }
 
@@ -141,16 +141,16 @@ pub fn get_distro_name() -> Result<String, String> {
                             \n
                             "#.to_string());
 
-    if re_os.is_some() {
+    if let Some(..) = re_os {
         let re_os = re_os.unwrap();
 
         let distro_name = re_os.name("distro_name")
             .unwrap()
             .as_str();
-        return Ok(format_data("os", &distro_name));
+        return Ok(format_data("os", distro_name));
     }
 
-    return Err("error".to_string());
+    Err("error".to_string())
 }
 
 pub fn get_kernel() -> Result<String, String> {
@@ -181,7 +181,7 @@ pub fn get_kernel() -> Result<String, String> {
     let re_kernel = re_kernel.unwrap();
 
     let kernel = re_kernel.name("kernel_version").unwrap().as_str();
-    return Ok(format_data("kernel", &kernel));
+    Ok(format_data("kernel", kernel))
 }
 
 pub fn get_shell() -> Result<String, String> {
@@ -205,7 +205,7 @@ pub fn get_shell() -> Result<String, String> {
     let re_shell = re_shell.unwrap();
 
     let shell = re_shell.name("shell_name").unwrap().as_str();
-    return Ok(format_data("shell", &shell));
+    Ok(format_data("shell", shell))
 }
 
 pub fn get_uptime() -> Result<String, String> {

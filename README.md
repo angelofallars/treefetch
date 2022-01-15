@@ -53,6 +53,14 @@ the `main` branch.
 
 *Made with [contrib.rocks](https://contrib.rocks).*
 
+## Supporting this project
+
+This project is free and open-source and will always be that way.
+
+If you like this project, please consider donating to help me improve this project even further.
+
+<a href="https://www.buymeacoffee.com/angelofallaria" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" width="140"></a>
+
 ## License
 
 This program is licensed under the GPLv3 License.

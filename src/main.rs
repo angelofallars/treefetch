@@ -33,9 +33,9 @@ fn main() {
                 );
         println!();
         println!("OPTIONS");
-        println!("  -b, -bonsai   Show a bonsai tree");
-        println!("  -x, -xmas     Show a Christmas tree");
-        println!("  -h, --help    Display this help message");
+        println!("  -b, --bonsai   Show a bonsai tree");
+        println!("  -x, --xmas     Show a Christmas tree");
+        println!("  -h, --help     Display this help message");
         println!();
         println!("Report bugs to https://github.com/angelofallars/treefetch/issues");
 
@@ -44,7 +44,7 @@ fn main() {
 
     if args.len() >= 2 {
         // bonsai tree if passed with -bonsai argument
-        if args[1] == "-bonsai" || args[1] == "-b" {
+        if args[1] == "--bonsai" || args[1] == "-b" {
             ascii_tree = format!(
                 "{green} {bold}             &               {reset}
                 {green}          && & &&             {reset}
@@ -66,7 +66,7 @@ fn main() {
                 bold = colors::bold,
             );
         // Christmas tree if passed with -xmas argument
-        } else if args[1] == "-xmas" || args[1] == "-x" {
+        } else if args[1] == "--xmas" || args[1] == "-x" {
             ascii_tree = format!(
                 "{bright_yellow}{bold}      ★         {reset}
                 {green}     /\\{red}{bold}o{green}\\       {reset}

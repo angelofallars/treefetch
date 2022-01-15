@@ -40,6 +40,18 @@ program anywhere.
 
 <img src="https://user-images.githubusercontent.com/39676098/145779840-59f1d0ef-7577-408c-a9fb-ce93b262c7df.png" alt="cbonsai and treefetch" width=600px>
 
+## Usage
+
+```
+Usage:
+  treefetch [options]
+
+OPTIONS
+  -b, --bonsai   Show a bonsai tree
+  -x, --xmas     Show a Christmas tree
+  -h, --help     Display this help message
+```
+
 ## Contributing
 
 Just make sure to develop and make pull requests on the `dev` branch instead of

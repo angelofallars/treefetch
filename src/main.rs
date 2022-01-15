@@ -37,6 +37,7 @@ fn main() {
         println!("  -x, --xmas     Show a Christmas tree");
         println!("  -h, --help     Display this help message");
         println!();
+        println!("treefetch 2.0.0");
         println!("Report bugs to https://github.com/angelofallars/treefetch/issues");
 
         return;

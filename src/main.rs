@@ -65,6 +65,7 @@ fn main() {
                 reset = colors::reset,
                 bold = colors::bold,
             );
+
         // Christmas tree if passed with -xmas argument
         } else if args[1] == "--xmas" || args[1] == "-x" {
             ascii_tree = format!(
@@ -86,6 +87,20 @@ fn main() {
                 reset = colors::reset,
             );
             is_christmas = true;
+
+        // Error if passed with the old -xmas argument
+        } else if args.contains(&String::from("-xmas")) {
+            println!("{green}{bold}ERROR:{reset} {bold}-xmas{reset} has been replaced by {bold}--xmas{reset}.",
+                green = colors::green,
+                bold = colors::bold,
+                reset = colors::reset,
+            );
+            println!("Run {bold}treefetch --xmas{reset} instead.",
+                bold = colors::bold,
+                reset = colors::reset,
+            );
+
+            return;
         }
     }
 

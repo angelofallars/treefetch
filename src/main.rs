@@ -22,6 +22,26 @@ fn main() {
     let args: Vec<String> = env::args().collect();
     let mut is_christmas = false;
 
+    // Help message
+    if args.contains(&String::from("-h")) ||
+       args.contains(&String::from("--help")) {
+       println!("Usage:");
+        println!("  {bold}{green}treefetch{reset} [options]",
+                green = colors::green,
+                reset = colors::reset,
+                bold = colors::bold,
+                );
+        println!();
+        println!("OPTIONS");
+        println!("  -b, -bonsai   Show a bonsai tree");
+        println!("  -x, -xmas     Show a Christmas tree");
+        println!("  -h, --help    Display this help message");
+        println!();
+        println!("Report bugs to https://github.com/angelofallars/treefetch/issues");
+
+        return;
+    }
+
     if args.len() >= 2 {
         // bonsai tree if passed with -bonsai argument
         if args[1] == "-bonsai" || args[1] == "-b" {

@@ -8,86 +8,83 @@ fn main() {
 
     let args: Vec<String> = env::args().collect();
     let mut is_christmas = false;
-    let mut ascii_tree = String::from("");
+    let mut ascii_tree: String;
 
-    if args.len() == 1 {
-        ascii_tree = format!(
-            "{green}     /\\*\\       {reset}
-            {green}    /\\O\\*\\      {reset}
-            {green}   /*/\\/\\/\\     {reset}
-            {green}  /\\O\\/\\*\\/\\    {reset}
-            {green} /\\*\\/\\*\\/\\/\\   {reset}
-            {green} |O\\/\\/*/\\/O|   {reset}
-            {yellow}      ||        {reset}
-            {yellow}      ||        {reset}
-            ",
-            green = colors::green,
-            yellow = colors::yellow,
-            reset = colors::reset,
-        );
-    } else if args.len() == 2 {
+    ascii_tree = format!(
+        "{green}     /\\*\\       {reset}
+        {green}    /\\O\\*\\      {reset}
+        {green}   /*/\\/\\/\\     {reset}
+        {green}  /\\O\\/\\*\\/\\    {reset}
+        {green} /\\*\\/\\*\\/\\/\\   {reset}
+        {green} |O\\/\\/*/\\/O|   {reset}
+        {yellow}      ||        {reset}
+        {yellow}      ||        {reset}
+        ",
+        green = colors::green,
+        yellow = colors::yellow,
+        reset = colors::reset,
+    );
 
-        // Skip first arg as that is the program command
-        for arg in &args[1..] {
+    // Skip first arg as that is the program command
+    for arg in &args[1..] {
 
-            // Convert to string slice for the comparisons
-            let arg = &arg[..];
+        // Convert to string slice for the comparisons
+        let arg = &arg[..];
 
-            match arg {
-                "--help" | "-h" => {
-                    help_message()
-                }
+        match arg {
+            "--help" | "-h" => {
+                help_message()
+            }
 
-                "--bonsai" | "-b" => {
-                    ascii_tree = format!(
-                        "{green} {bold}             &               {reset}
-                        {green}          && & &&             {reset}
-                        {green}         &{yellow}_& & _/{green}&            {reset}
-                        {yellow}{bold}           /~\\                {reset}
-                        {green} &  & &{yellow}     /|                {reset}
-                        {green} & {yellow}{bold}_&{reset}{green}&{yellow}   _\\_/|   {green}             {reset}
-                        {green}&& {yellow}{bold}&{reset}{green}&&{yellow}_/    |\\     {green} && &      {reset}
-                        {green}  &&{yellow}_|/{green}{bold} &{reset}{yellow}  \\//~\\{green}{bold}   &&{reset}{yellow} &&{green}&  {reset}
-                        {yellow}            |/\\__/{green}& &{yellow}_/_{green}&&  {reset}
-                        {gray}        {bold}:{reset}{green}____{yellow}./~\\.{green}____{gray}{bold}:         {reset}
-                        {gray}{bold}         \\___________/         {reset}
-                        {gray}{bold}          (_)     (_)            {reset}
-                        ",
-                        gray = colors::gray,
-                        green = colors::green,
-                        yellow = colors::yellow,
-                        reset = colors::reset,
-                        bold = colors::bold,
-                    );
-                    break;
-                }
+            "--bonsai" | "-b" => {
+                ascii_tree = format!(
+                    "{green} {bold}             &               {reset}
+                    {green}          && & &&             {reset}
+                    {green}         &{yellow}_& & _/{green}&            {reset}
+                    {yellow}{bold}           /~\\                {reset}
+                    {green} &  & &{yellow}     /|                {reset}
+                    {green} & {yellow}{bold}_&{reset}{green}&{yellow}   _\\_/|   {green}             {reset}
+                    {green}&& {yellow}{bold}&{reset}{green}&&{yellow}_/    |\\     {green} && &      {reset}
+                    {green}  &&{yellow}_|/{green}{bold} &{reset}{yellow}  \\//~\\{green}{bold}   &&{reset}{yellow} &&{green}&  {reset}
+                    {yellow}            |/\\__/{green}& &{yellow}_/_{green}&&  {reset}
+                    {gray}        {bold}:{reset}{green}____{yellow}./~\\.{green}____{gray}{bold}:         {reset}
+                    {gray}{bold}         \\___________/         {reset}
+                    {gray}{bold}          (_)     (_)            {reset}
+                    ",
+                    gray = colors::gray,
+                    green = colors::green,
+                    yellow = colors::yellow,
+                    reset = colors::reset,
+                    bold = colors::bold,
+                );
+                break;
+            }
 
-                "--xmas" | "-x" => {
-                    ascii_tree = format!(
-                        "{bright_yellow}{bold}      ★         {reset}
-                        {green}     /\\{red}{bold}o{green}\\       {reset}
-                        {green}    /\\{red}{bold}o{green}\\*\\      {reset}
-                        {green}   /{red}{bold}o{green}/\\/\\{blue}{bold}o{green}\\     {reset}
-                        {green}  /\\O\\/\\{red}{bold}o{green}\\/{red}{bold}o{green}    {reset}
-                        {green} /{blue}{bold}o{green}*{red}{bold}o{green}/{blue}{bold}o{green}*\\/{red}{bold}o{green}/\\   {reset}
-                        {green} |O\\/\\/*/{red}{bold}o{green}/O|   {reset}
-                        {yellow}      ||        {reset}
-                        ",
-                        red = colors::red,
-                        green = colors::green,
-                        blue = colors::blue,
-                        yellow = colors::yellow,
-                        bright_yellow = "\x1b[93m",
-                        bold = colors::bold,
-                        reset = colors::reset,
-                    );
-                    is_christmas = true;
-                    break;
-                }
+            "--xmas" | "-x" => {
+                ascii_tree = format!(
+                    "{bright_yellow}{bold}      ★         {reset}
+                    {green}     /\\{red}{bold}o{green}\\       {reset}
+                    {green}    /\\{red}{bold}o{green}\\*\\      {reset}
+                    {green}   /{red}{bold}o{green}/\\/\\{blue}{bold}o{green}\\     {reset}
+                    {green}  /\\O\\/\\{red}{bold}o{green}\\/{red}{bold}o{green}    {reset}
+                    {green} /{blue}{bold}o{green}*{red}{bold}o{green}/{blue}{bold}o{green}*\\/{red}{bold}o{green}/\\   {reset}
+                    {green} |O\\/\\/*/{red}{bold}o{green}/O|   {reset}
+                    {yellow}      ||        {reset}
+                    ",
+                    red = colors::red,
+                    green = colors::green,
+                    blue = colors::blue,
+                    yellow = colors::yellow,
+                    bright_yellow = "\x1b[93m",
+                    bold = colors::bold,
+                    reset = colors::reset,
+                );
+                is_christmas = true;
+                break;
+            }
 
-                _ => {
-                    invalid_option(arg.to_string());
-                }
+            _ => {
+                invalid_option(arg.to_string());
             }
         }
     }

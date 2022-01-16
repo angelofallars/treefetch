@@ -28,7 +28,7 @@ fn main() {
     } else if args.len() == 2 {
         match args[1].as_str() {
             "--help" | "-h" => {
-                help_massage()
+                help_message()
             }
             "--bonsai" | "-b" => {
                 ascii_tree = format!(
@@ -168,7 +168,7 @@ fn split_by_newline(ascii_art: String) -> Vec<String> {
     split
 }
 
-fn help_massage() {
+fn help_message() {
     let version = env!("CARGO_PKG_VERSION");
     println!("Usage:");
     println!("  {bold}{green}treefetch{reset} [options]",

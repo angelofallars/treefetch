@@ -170,6 +170,7 @@ fn split_by_newline(ascii_art: String) -> Vec<String> {
 }
 
 fn help_massage() {
+    let version = env!("CARGO_PKG_VERSION");
     println!("Usage:");
     println!("  {bold}{green}treefetch{reset} [options]",
             green = colors::green,
@@ -182,13 +183,13 @@ fn help_massage() {
     println!("  -x, --xmas     Show a Christmas tree");
     println!("  -h, --help     Display this help message");
     println!();
-    println!("treefetch 2.0.0");
+    println!("treefetch {}", version);
     println!("Report bugs to https://github.com/angelofallars/treefetch/issues");
     process::exit(1)
 }
 
 fn invalid_option(option: String) {
-    println!("Unrecognized option '{option}'", option = option);
+    println!("Unrecognized option '{}'", option);
     println!("Try 'treefetch --help' for more information.");
     process::exit(1)
 }

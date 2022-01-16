@@ -1,109 +1,85 @@
 use std::env;
+use std::process;
 mod colors;
 mod fields;
 
 // Simple system fetch tool written in Rust.
 fn main() {
-    let mut ascii_tree = format!(
-        "{green}     /\\*\\       {reset}
-        {green}    /\\O\\*\\      {reset}
-        {green}   /*/\\/\\/\\     {reset}
-        {green}  /\\O\\/\\*\\/\\    {reset}
-        {green} /\\*\\/\\*\\/\\/\\   {reset}
-        {green} |O\\/\\/*/\\/O|   {reset}
-        {yellow}      ||        {reset}
-        {yellow}      ||        {reset}
-        ",
-        green = colors::green,
-        yellow = colors::yellow,
-        reset = colors::reset,
-    );
 
     let args: Vec<String> = env::args().collect();
     let mut is_christmas = false;
+    let mut ascii_tree = String::from("");
 
-    // Help message
-    if args.contains(&String::from("-h")) ||
-       args.contains(&String::from("--help")) {
-       println!("Usage:");
-        println!("  {bold}{green}treefetch{reset} [options]",
-                green = colors::green,
-                reset = colors::reset,
-                bold = colors::bold,
-                );
-        println!();
-        println!("OPTIONS");
-        println!("  -b, --bonsai   Show a bonsai tree");
-        println!("  -x, --xmas     Show a Christmas tree");
-        println!("  -h, --help     Display this help message");
-        println!();
-        println!("treefetch 2.0.0");
-        println!("Report bugs to https://github.com/angelofallars/treefetch/issues");
-
-        return;
+    if args.len() == 1 {
+        ascii_tree = format!(
+            "{green}     /\\*\\       {reset}
+            {green}    /\\O\\*\\      {reset}
+            {green}   /*/\\/\\/\\     {reset}
+            {green}  /\\O\\/\\*\\/\\    {reset}
+            {green} /\\*\\/\\*\\/\\/\\   {reset}
+            {green} |O\\/\\/*/\\/O|   {reset}
+            {yellow}      ||        {reset}
+            {yellow}      ||        {reset}
+            ",
+            green = colors::green,
+            yellow = colors::yellow,
+            reset = colors::reset,
+        );
     }
-
-    if args.len() >= 2 {
-        // bonsai tree if passed with -bonsai argument
-        if args[1] == "--bonsai" || args[1] == "-b" {
-            ascii_tree = format!(
-                "{green} {bold}             &               {reset}
-                {green}          && & &&             {reset}
-                {green}         &{yellow}_& & _/{green}&            {reset}
-                {yellow}{bold}           /~\\                {reset}
-                {green} &  & &{yellow}     /|                {reset}
-                {green} & {yellow}{bold}_&{reset}{green}&{yellow}   _\\_/|   {green}             {reset}
-                {green}&& {yellow}{bold}&{reset}{green}&&{yellow}_/    |\\     {green} && &      {reset}
-                {green}  &&{yellow}_|/{green}{bold} &{reset}{yellow}  \\//~\\{green}{bold}   &&{reset}{yellow} &&{green}&  {reset}
-                {yellow}            |/\\__/{green}& &{yellow}_/_{green}&&  {reset}
-                {gray}        {bold}:{reset}{green}____{yellow}./~\\.{green}____{gray}{bold}:         {reset}
-                {gray}{bold}         \\___________/         {reset}
-                {gray}{bold}          (_)     (_)            {reset}
-                ",
-                gray = colors::gray,
-                green = colors::green,
-                yellow = colors::yellow,
-                reset = colors::reset,
-                bold = colors::bold,
-            );
-
-        // Christmas tree if passed with -xmas argument
-        } else if args[1] == "--xmas" || args[1] == "-x" {
-            ascii_tree = format!(
-                "{bright_yellow}{bold}      ★         {reset}
-                {green}     /\\{red}{bold}o{green}\\       {reset}
-                {green}    /\\{red}{bold}o{green}\\*\\      {reset}
-                {green}   /{red}{bold}o{green}/\\/\\{blue}{bold}o{green}\\     {reset}
-                {green}  /\\O\\/\\{red}{bold}o{green}\\/{red}{bold}o{green}    {reset}
-                {green} /{blue}{bold}o{green}*{red}{bold}o{green}/{blue}{bold}o{green}*\\/{red}{bold}o{green}/\\   {reset}
-                {green} |O\\/\\/*/{red}{bold}o{green}/O|   {reset}
-                {yellow}      ||        {reset}
-                ",
-                red = colors::red,
-                green = colors::green,
-                blue = colors::blue,
-                yellow = colors::yellow,
-                bright_yellow = "\x1b[93m",
-                bold = colors::bold,
-                reset = colors::reset,
-            );
-            is_christmas = true;
-
-        // Error if passed with the old -xmas argument
-        } else if args.contains(&String::from("-xmas")) {
-            println!("{green}{bold}ERROR:{reset} {bold}-xmas{reset} has been replaced by {bold}--xmas{reset}.",
-                green = colors::green,
-                bold = colors::bold,
-                reset = colors::reset,
-            );
-            println!("Run {bold}treefetch --xmas{reset} instead.",
-                bold = colors::bold,
-                reset = colors::reset,
-            );
-
-            return;
+    else if args.len() == 2 {
+        match args[1].as_str() {
+            "--help" | "-h" => {
+                help_massage()
+            }
+            "--bonsai" | "-b" => {
+                ascii_tree = format!(
+                    "{green} {bold}             &               {reset}
+                    {green}          && & &&             {reset}
+                    {green}         &{yellow}_& & _/{green}&            {reset}
+                    {yellow}{bold}           /~\\                {reset}
+                    {green} &  & &{yellow}     /|                {reset}
+                    {green} & {yellow}{bold}_&{reset}{green}&{yellow}   _\\_/|   {green}             {reset}
+                    {green}&& {yellow}{bold}&{reset}{green}&&{yellow}_/    |\\     {green} && &      {reset}
+                    {green}  &&{yellow}_|/{green}{bold} &{reset}{yellow}  \\//~\\{green}{bold}   &&{reset}{yellow} &&{green}&  {reset}
+                    {yellow}            |/\\__/{green}& &{yellow}_/_{green}&&  {reset}
+                    {gray}        {bold}:{reset}{green}____{yellow}./~\\.{green}____{gray}{bold}:         {reset}
+                    {gray}{bold}         \\___________/         {reset}
+                    {gray}{bold}          (_)     (_)            {reset}
+                    ",
+                    gray = colors::gray,
+                    green = colors::green,
+                    yellow = colors::yellow,
+                    reset = colors::reset,
+                    bold = colors::bold,
+                );
+            }
+            "--xmas" | "-x" => {
+                ascii_tree = format!(
+                    "{bright_yellow}{bold}      ★         {reset}
+                    {green}     /\\{red}{bold}o{green}\\       {reset}
+                    {green}    /\\{red}{bold}o{green}\\*\\      {reset}
+                    {green}   /{red}{bold}o{green}/\\/\\{blue}{bold}o{green}\\     {reset}
+                    {green}  /\\O\\/\\{red}{bold}o{green}\\/{red}{bold}o{green}    {reset}
+                    {green} /{blue}{bold}o{green}*{red}{bold}o{green}/{blue}{bold}o{green}*\\/{red}{bold}o{green}/\\   {reset}
+                    {green} |O\\/\\/*/{red}{bold}o{green}/O|   {reset}
+                    {yellow}      ||        {reset}
+                    ",
+                    red = colors::red,
+                    green = colors::green,
+                    blue = colors::blue,
+                    yellow = colors::yellow,
+                    bright_yellow = "\x1b[93m",
+                    bold = colors::bold,
+                    reset = colors::reset,
+                );
+                is_christmas = true;
+            }
+            _ => {
+                invalid_option(args[1].to_string());
+            }
         }
     }
+    else { invalid_option(args[1].to_string()) }
 
     let ascii_tree = split_by_newline(ascii_tree);
 
@@ -191,4 +167,28 @@ fn split_by_newline(ascii_art: String) -> Vec<String> {
     }
 
     split
+}
+
+fn help_massage() {
+    println!("Usage:");
+    println!("  {bold}{green}treefetch{reset} [options]",
+            green = colors::green,
+            reset = colors::reset,
+            bold = colors::bold,
+            );
+    println!();
+    println!("OPTIONS");
+    println!("  -b, --bonsai   Show a bonsai tree");
+    println!("  -x, --xmas     Show a Christmas tree");
+    println!("  -h, --help     Display this help message");
+    println!();
+    println!("treefetch 2.0.0");
+    println!("Report bugs to https://github.com/angelofallars/treefetch/issues");
+    process::exit(1)
+}
+
+fn invalid_option(option: String) {
+    println!("Unrecognized option '{option}'", option = option);
+    println!("Try 'treefetch --help' for more information.");
+    process::exit(1)
 }

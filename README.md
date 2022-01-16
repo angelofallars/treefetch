@@ -6,9 +6,10 @@ A great pair for [cbonsai](https://gitlab.com/jallbrit/cbonsai), to help you get
 
 <img src="https://user-images.githubusercontent.com/39676098/145780007-f612ceff-7414-4bbe-af14-e2d48004ed9d.png" alt="treefetch" width=380px>
 
-**NEW:** Christmas mode with `treefetch --xmas`!
+More trees with `treefetch --bonsai` and `treefetch --xmas`!
 
-<img src="https://user-images.githubusercontent.com/39676098/145915591-aff4cd4e-1792-4cac-b266-98575d6fa6b5.png" alt="treefetch christmas" width=380px>
+<img src="https://user-images.githubusercontent.com/39676098/149612115-2a02d617-d70a-4eed-bcce-2dd590698ea1.png" alt="treefetch bonus trees" width=380px>
+
 
 ![Rust](https://img.shields.io/badge/rust-%23000000.svg?style=for-the-badge&logo=rust&logoColor=white)
 
@@ -39,6 +40,18 @@ program anywhere.
 - `cargo install --path .`
 
 <img src="https://user-images.githubusercontent.com/39676098/145779840-59f1d0ef-7577-408c-a9fb-ce93b262c7df.png" alt="cbonsai and treefetch" width=600px>
+
+## Usage
+
+```
+Usage:
+  treefetch [options]
+
+OPTIONS
+  -b, --bonsai   Show a bonsai tree
+  -x, --xmas     Show a Christmas tree
+  -h, --help     Display this help message
+```
 
 ## Contributing
 

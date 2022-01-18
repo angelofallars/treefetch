@@ -1,4 +1,4 @@
-# 🌳 `treefetch`
+# 🌲 `treefetch`
 
 A comfy and fast system fetch tool made in Rust. Tested to be much faster than neofetch and pfetch.
 

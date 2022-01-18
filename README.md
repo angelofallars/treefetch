@@ -1,6 +1,6 @@
 # 🌳 `treefetch`
 
-A lightning-fast minimalist system fetch tool made in Rust. Even faster than neofetch and pfetch. Made to practice my new Rust skills 🦀.
+A comfy and fast system fetch tool made in Rust. Tested to be much faster than neofetch and pfetch.
 
 A great pair for [cbonsai](https://gitlab.com/jallbrit/cbonsai), to help you get upvotes on your Linux rice.
 

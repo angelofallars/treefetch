@@ -5,34 +5,44 @@ mod fields;
 // Simple system fetch tool written in Rust.
 fn main() {
     let matches = app_from_crate!()
-        .arg(arg!([TREE])
-            .help("Which tree to display.")
-            .possible_values(["normal", "xmas", "bonsai"])
-            .default_value("normal"))
+        .arg(
+            arg!([TREE])
+                .help("Which tree to display.")
+                .possible_values(["normal", "xmas", "bonsai"])
+                .default_value("normal"),
+        )
         .get_matches();
 
-    let mut is_christmas = false;
-    let ascii_tree: String;
+    let mut is_christmas: bool = false;
 
-    match matches.value_of("TREE").unwrap() {
+    macro_rules! with_color {
+        ( $ascii: expr, $( $color: ident ),* ) => {
+            format!(
+                $ascii,
+                $($color = colors::$color,)*
+            ).lines().map( |s| s.trim().to_string() ).collect()
+        }
+    }
+
+    let mut ascii_tree: Vec<String> = match matches.value_of("TREE").unwrap() {
         "normal" => {
-            ascii_tree = format!(
+            with_color!(
                 "{green}     /\\*\\       {reset}
-            {green}    /\\O\\*\\      {reset}
-            {green}   /*/\\/\\/\\     {reset}
-            {green}  /\\O\\/\\*\\/\\    {reset}
-            {green} /\\*\\/\\*\\/\\/\\   {reset}
-            {green} |O\\/\\/*/\\/O|   {reset}
-            {yellow}      ||        {reset}
-            {yellow}      ||        {reset}
-            ",
-                green = colors::green,
-                yellow = colors::yellow,
-                reset = colors::reset,
-            );
+                {green}    /\\O\\*\\      {reset}
+                {green}   /*/\\/\\/\\     {reset}
+                {green}  /\\O\\/\\*\\/\\    {reset}
+                {green} /\\*\\/\\*\\/\\/\\   {reset}
+                {green} |O\\/\\/*/\\/O|   {reset}
+                {yellow}      ||        {reset}
+                {yellow}      ||        {reset}
+                ",
+                green,
+                yellow,
+                reset
+            )
         }
         "bonsai" => {
-            ascii_tree = format!(
+            with_color!(
                 "{green} {bold}             &               {reset}
                 {green}          && & &&             {reset}
                 {green}         &{yellow}_& & _/{green}&            {reset}
@@ -46,16 +56,13 @@ fn main() {
                 {gray}{bold}         \\___________/         {reset}
                 {gray}{bold}          (_)     (_)            {reset}
                 ",
-                gray = colors::gray,
-                green = colors::green,
-                yellow = colors::yellow,
-                reset = colors::reset,
-                bold = colors::bold,
-            );
+                gray, green, yellow, reset, bold
+            )
         }
 
         "xmas" => {
-            ascii_tree = format!(
+            is_christmas = true;
+            with_color!(
                 "{bright_yellow}{bold}      ★         {reset}
                 {green}     /\\{red}{bold}o{green}\\       {reset}
                 {green}    /\\{red}{bold}o{green}\\*\\      {reset}
@@ -64,29 +71,24 @@ fn main() {
                 {green} /{blue}{bold}o{green}*{red}{bold}o{green}/{blue}{bold}o{green}*\\/{red}{bold}o{green}/\\   {reset}
                 {green} |O\\/\\/*/{red}{bold}o{green}/O|   {reset}
                 {yellow}      ||        {reset}
+                {yellow}      ||        {reset}
                 ",
-                red = colors::red,
-                green = colors::green,
-                blue = colors::blue,
-                yellow = colors::yellow,
-                bright_yellow = "\x1b[93m",
-                bold = colors::bold,
-                reset = colors::reset,
-            );
-            is_christmas = true;
+                red, green, blue, yellow, bright_yellow, bold, reset
+            )
         }
 
-        _ => unreachable!()
-    }
-
-    let ascii_tree = split_by_newline(ascii_tree);
+        _ => unreachable!(),
+    };
 
     let mut data_list: Vec<String> = Vec::new();
 
+    // Hostname
     if let Ok(value) = fields::get_user_host_name(is_christmas) {
         data_list.push(value.0);
         data_list.push(value.1);
     };
+    
+    // Distro name
 
     if let Ok(value) = fields::get_distro_name() {
         data_list.push(value);
@@ -116,53 +118,23 @@ fn main() {
         data_list.push(value);
     };
 
-    print_left_to_right(ascii_tree, data_list, is_christmas);
-}
-
-// Print two vectors of strings side to side
-fn print_left_to_right(left: Vec<String>, right: Vec<String>, is_christmas: bool) {
-    let left_len = left.len();
-    let right_len = right.len();
-    let max_len = if left_len > right_len {
-        left_len
-    } else {
-        right_len
-    };
-
-    for i in 0..max_len {
-        if i < left_len {
-            print!("{}", left[i]);
-        }
-        if i < right_len {
-            // Red square if Christmas mode
+    //  Join lines
+    let join = |mut left: Vec<String>, mut right: Vec<String>| -> Vec<String> {
+        let mut i = 0;
+        right.reverse();
+        while let Some(mut right_item) = right.pop() {
             if is_christmas {
-                print!(
-                    "{}",
-                    right[i].replace("▪", &format!("{}▪{}", colors::red, colors::green))
-                );
-            } else {
-                print!("{}", right[i]);
+                right_item = right_item.replace("▪", &format!("{}▪{}", colors::red, colors::green))
             }
+            left[i] = format!("{}{}", left[i], right_item);
+            i += 1
         }
+        left
+    };
+    
+    let data_list = join(ascii_tree, data_list);
 
-        // Print a newline
-        println!();
+    for item in data_list.iter() {
+        println!("{}", item);
     }
-}
-
-// Split a multi-line string into several ones separated by the newline
-fn split_by_newline(ascii_art: String) -> Vec<String> {
-    let mut split: Vec<String> = Vec::new();
-    let mut last_index = 0;
-
-    let bytes = ascii_art.as_bytes();
-
-    for (i, &item) in bytes.iter().enumerate() {
-        if item == b'\n' {
-            split.push(ascii_art[last_index..i].trim().to_string());
-            last_index = i;
-        }
-    }
-
-    split
 }

@@ -1,17 +1,15 @@
 # 🌲 `treefetch`
 
+<img src="https://img.shields.io/github/v/release/angelofallars/treefetch?display_name=tag&color=1A90D2"> <img src="https://img.shields.io/github/stars/angelofallars/treefetch?label=stars&color=C3B640"> <img src="https://img.shields.io/github/issues/angelofallars/treefetch?color=87599A"> <img src="https://img.shields.io/github/downloads/angelofallars/treefetch/total?label=downloads&logo=github&color=6EA340"> 
+
 A comfy and fast system fetch tool made in Rust. Tested to be much faster than neofetch and pfetch.
 
 A great pair for [cbonsai](https://gitlab.com/jallbrit/cbonsai), to help you get upvotes on your Linux rice.
 
 <img src="https://user-images.githubusercontent.com/39676098/145780007-f612ceff-7414-4bbe-af14-e2d48004ed9d.png" alt="treefetch" width=380px>
 
-More trees with `treefetch --bonsai` and `treefetch --xmas`!
+<img src="https://repology.org/badge/vertical-allrepos/treefetch.svg">
 
-<img src="https://user-images.githubusercontent.com/39676098/149612115-2a02d617-d70a-4eed-bcce-2dd590698ea1.png" alt="treefetch bonus trees" width=380px>
-
-
-![Rust](https://img.shields.io/badge/rust-%23000000.svg?style=for-the-badge&logo=rust&logoColor=white)
 
 ## Install (Arch Linux)
 
@@ -52,6 +50,8 @@ OPTIONS
   -x, --xmas     Show a Christmas tree
   -h, --help     Display this help message
 ```
+
+<img src="https://user-images.githubusercontent.com/39676098/149612115-2a02d617-d70a-4eed-bcce-2dd590698ea1.png" alt="treefetch bonus trees" width=380px>
 
 ## Contributing
 

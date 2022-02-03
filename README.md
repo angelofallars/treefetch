@@ -6,7 +6,7 @@ A great pair for [cbonsai](https://gitlab.com/jallbrit/cbonsai), to help you get
 
 <img src="https://user-images.githubusercontent.com/39676098/145780007-f612ceff-7414-4bbe-af14-e2d48004ed9d.png" alt="treefetch" width=380px>
 
-More trees with `treefetch --bonsai` and `treefetch --xmas`!
+More trees with `treefetch bonsai` and `treefetch xmas`!
 
 <img src="https://user-images.githubusercontent.com/39676098/149612115-2a02d617-d70a-4eed-bcce-2dd590698ea1.png" alt="treefetch bonus trees" width=380px>
 
@@ -44,13 +44,15 @@ program anywhere.
 ## Usage
 
 ```
-Usage:
-  treefetch [options]
+USAGE:
+    treefetch [TREE]
 
-OPTIONS
-  -b, --bonsai   Show a bonsai tree
-  -x, --xmas     Show a Christmas tree
-  -h, --help     Display this help message
+ARGS:
+    <TREE>    Which tree to display. [default: normal] [possible values: normal, xmas, bonsai]
+
+OPTIONS:
+    -h, --help       Print help information
+    -V, --version    Print version information
 ```
 
 ## Contributing

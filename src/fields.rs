@@ -208,124 +208,24 @@ pub fn get_shell() -> Result<String, String> {
     Ok(format_data("shell", shell))
 }
 
-pub fn get_uptime() -> Result<String, String> {
-    // Get the uptime file
-    let uptime_file = fs::File::open("/proc/uptime");
-
-    // Return if can't find it
-    if uptime_file.is_err() {
-        return Err("Error".to_string());
-    }
-
-    let mut uptime_file = uptime_file.unwrap();
-    let mut uptime = String::new();
-
-    let result = uptime_file.read_to_string(&mut uptime);
-
-    if result.is_err() {
-        return Err("error".to_string());
-    }
-
-    let re_uptime = match_regex(&uptime,
-                                r#"(?x)
-                                ^(?P<uptime_seconds>\d+)\.
-                                "#.to_string());
-
-    if re_uptime.is_none() {
-        return Err("error".to_string());
-    }
-
-    let re_uptime = re_uptime.unwrap();
-
-    // Parse the uptime in seconds into an integer
-    let uptime_seconds: u32 = re_uptime
-        .name("uptime_seconds")
-        .unwrap()
-        .as_str()
-        .parse()
-        .unwrap();
+pub fn format_uptime(time: std::time::Duration) -> String {
+    let uptime_seconds = time.as_secs();
 
     // Calculate the uptime in hours and minutes respectively
-    let uptime_hours: u32 = uptime_seconds / (60 * 60);
-    let uptime_minutes: u32 = (uptime_seconds % (60 * 60)) / 60;
+    let uptime_hours = uptime_seconds / (60 * 60);
+    let uptime_minutes = (uptime_seconds % (60 * 60)) / 60;
 
-    return Ok(format_data(
-            "uptime",
-            &format!("{hours}h {minutes}m",
-                     hours = uptime_hours,
-                     minutes = uptime_minutes)
-            ));
+    format_data(
+        "uptime",
+        &format!("{hours}h {minutes}m",
+                 hours = uptime_hours,
+                 minutes = uptime_minutes))
 }
 
-pub fn get_memory() -> Result<String, String> {
-    // Get the memory file
-    let memory_file = fs::File::open("/proc/meminfo");
-
-    // Return if can't find it
-    if memory_file.is_err() {
-        return Err("Error".to_string());
-    }
-
-    let mut memory_file = memory_file.unwrap();
-    let mut memory = String::new();
-
-    let result = memory_file.read_to_string(&mut memory);
-
-    if result.is_err() {
-        return Err("error".to_string());
-    }
-
-    let re_total_memory = match_regex(&memory,
-                                      r#"(?x)
-                                      MemTotal:
-                                      \s+
-                                      (?P<mem_total>\d+)
-                                      .+\n.+\n
-                                      MemAvailable:
-                                      "#.to_string());
-
-    if re_total_memory.is_none() {
-        return Err("error".to_string());
-    }
-
-    let re_available_memory = match_regex(&memory,
-                                          r#"(?x)
-                                          MemAvailable:
-                                          \s+
-                                          (?P<mem_available>\d+)
-                                          "#.to_string());
-
-    if re_available_memory.is_none() {
-        return Err("error".to_string());
-    }
-
-    let re_total_memory = re_total_memory.unwrap();
-    let re_available_memory = re_available_memory.unwrap();
-
-    let total_mem: i32 = re_total_memory
-                         .name("mem_total")
-                         .unwrap()
-                         .as_str()
-                         .parse()
-                         .unwrap();
-
-    let available_mem: i32 = re_available_memory
-                             .name("mem_available")
-                             .unwrap()
-                             .as_str()
-                             .parse()
-                             .unwrap();
-
-    let used_mem = total_mem - available_mem;
-
-    // Divide memory by 1,000
-    let total_mem = total_mem / 1_024;
-    let used_mem = used_mem / 1_024;
-
-    return Ok(format_data(
-              "memory",
-              &format!("{used}m / {total}m",
-                       used = used_mem,
-                       total = total_mem)
-            ));
+pub fn format_memory(mem: systemstat::Memory) -> String {
+    format_data(
+        "memory",
+        &format!("{used} / {total}",
+                 used = systemstat::saturating_sub_bytes(mem.total, mem.free),
+                 total = mem.total))
 }

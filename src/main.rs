@@ -1,5 +1,6 @@
 use std::env;
 use std::process;
+use systemstat::Platform;
 mod colors;
 mod fields;
 
@@ -91,6 +92,8 @@ fn main() {
 
     let ascii_tree = split_by_newline(ascii_tree);
 
+    let stat = systemstat::System::new();
+
     let mut data_list: Vec<String> = Vec::new();
 
     if let Ok(value) = fields::get_user_host_name(is_christmas) {
@@ -117,14 +120,14 @@ fn main() {
 
     // Uptime
 
-    if let Ok(value) = fields::get_uptime() {
-        data_list.push(value);
+    if let Ok(value) = stat.uptime() {
+        data_list.push(fields::format_uptime(value));
     };
 
     // Memory
 
-    if let Ok(value) = fields::get_memory() {
-        data_list.push(value);
+    if let Ok(value) = stat.memory() {
+        data_list.push(fields::format_memory(value));
     };
 
     print_left_to_right(ascii_tree, data_list, is_christmas);

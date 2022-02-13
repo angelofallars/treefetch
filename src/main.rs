@@ -130,6 +130,12 @@ fn main() {
         data_list.push(fields::format_memory(value));
     };
 
+    // Battery
+
+    if let Ok(value) = stat.battery_life() {
+        data_list.push(fields::format_battery(value));
+    };
+
     print_left_to_right(ascii_tree, data_list, is_christmas);
 }
 

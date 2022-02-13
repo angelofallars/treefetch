@@ -229,3 +229,12 @@ pub fn format_memory(mem: systemstat::Memory) -> String {
                  used = systemstat::saturating_sub_bytes(mem.total, mem.free),
                  total = mem.total))
 }
+
+pub fn format_battery(battery: systemstat::BatteryLife) -> String {
+    format_data(
+        "battery",
+        &format!("{percent}%, {hours}h {minutes}m remaining",
+                 percent = battery.remaining_capacity * 100.0,
+                 hours = battery.remaining_time.as_secs() / 3600,
+                 minutes = battery.remaining_time.as_secs() % 60))
+}

@@ -143,11 +143,15 @@ pub fn get_distro_name() -> Result<String, String> {
     Err("error".to_string())
 }
 
-pub fn get_kernel() -> Result<String, String> {
+pub fn get_kernel(show_kern_name: bool) -> Result<String, String> {
     let uname = nix::sys::utsname::uname();
     Ok(format_data(
         "kernel",
-        &format!("{} {}", uname.release(), uname.machine())))
+        &if show_kern_name {
+            format!("{}/{} {}", uname.sysname(), uname.machine(), uname.release())
+        } else {
+            format!("{} {}", uname.release(), uname.machine())
+        }))
 }
 
 pub fn get_shell() -> Result<String, String> {

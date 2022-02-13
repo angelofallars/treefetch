@@ -8,6 +8,7 @@ mod fields;
 fn main() {
 
     let args: Vec<String> = env::args().collect();
+    let mut show_kern_name = false;
     let mut is_christmas = false;
     let mut ascii_tree: String;
 
@@ -84,6 +85,10 @@ fn main() {
                 break;
             }
 
+            "--kernel-name" | "-k" => {
+                show_kern_name = true;
+            }
+
             _ => {
                 invalid_option(arg.to_string());
             }
@@ -108,7 +113,7 @@ fn main() {
 
     // Kernel name
 
-    if let Ok(value) = fields::get_kernel() {
+    if let Ok(value) = fields::get_kernel(show_kern_name) {
         data_list.push(value);
     };
 

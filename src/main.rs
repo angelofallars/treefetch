@@ -1,5 +1,6 @@
 use std::env;
 use std::process;
+use systemstat::Platform;
 mod colors;
 mod fields;
 
@@ -7,6 +8,7 @@ mod fields;
 fn main() {
 
     let args: Vec<String> = env::args().collect();
+    let mut show_kern_name = false;
     let mut is_christmas = false;
     let mut ascii_tree: String;
 
@@ -83,6 +85,10 @@ fn main() {
                 break;
             }
 
+            "--kernel-name" | "-k" => {
+                show_kern_name = true;
+            }
+
             _ => {
                 invalid_option(arg.to_string());
             }
@@ -90,6 +96,8 @@ fn main() {
     }
 
     let ascii_tree = split_by_newline(ascii_tree);
+
+    let stat = systemstat::System::new();
 
     let mut data_list: Vec<String> = Vec::new();
 
@@ -105,7 +113,7 @@ fn main() {
 
     // Kernel name
 
-    if let Ok(value) = fields::get_kernel() {
+    if let Ok(value) = fields::get_kernel(show_kern_name) {
         data_list.push(value);
     };
 
@@ -117,14 +125,20 @@ fn main() {
 
     // Uptime
 
-    if let Ok(value) = fields::get_uptime() {
-        data_list.push(value);
+    if let Ok(value) = stat.uptime() {
+        data_list.push(fields::format_uptime(value));
     };
 
     // Memory
 
-    if let Ok(value) = fields::get_memory() {
-        data_list.push(value);
+    if let Ok(value) = stat.memory() {
+        data_list.push(fields::format_memory(value));
+    };
+
+    // Battery
+
+    if let Ok(value) = stat.battery_life() {
+        data_list.push(fields::format_battery(value));
     };
 
     print_left_to_right(ascii_tree, data_list, is_christmas);

@@ -47,7 +47,7 @@ fn main() {
                     {green} &  & &{yellow}     /|                {reset}
                     {green} & {yellow}{bold}_&{reset}{green}&{yellow}   _\\_/|   {green}             {reset}
                     {green}&& {yellow}{bold}&{reset}{green}&&{yellow}_/    |\\     {green} && &      {reset}
-                    {green}  &&{yellow}_|/{green}{bold} &{reset}{yellow}  \\//~\\{green}{bold}   &&{reset}{yellow} &&{green}&  {reset}
+                    {green}  &&{yellow}_|/{green}{bold} &{reset}{yellow}  \\//~\\{green}{bold}   &&{reset}{yellow} &&{green}&   {reset}
                     {yellow}            |/\\__/{green}& &{yellow}_/_{green}&&  {reset}
                     {gray}        {bold}:{reset}{green}____{yellow}./~\\.{green}____{gray}{bold}:         {reset}
                     {gray}{bold}         \\___________/         {reset}

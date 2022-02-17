@@ -4,7 +4,7 @@
 
 A comfy and fast system fetch tool made in Rust. Tested to be much faster than neofetch and pfetch.
 
-A great pair for [cbonsai](https://gitlab.com/jallbrit/cbonsai), to help you get upvotes on your Linux rice.
+A great pair for [cbonsai](https://gitlab.com/jallbrit/cbonsai), to help you get upvotes on your \*nix rice.
 
 <img src="https://user-images.githubusercontent.com/39676098/145780007-f612ceff-7414-4bbe-af14-e2d48004ed9d.png" alt="treefetch" width=380px>
 
@@ -26,16 +26,14 @@ Install Pacstall [here](https://github.com/pacstall/pacstall) (basically AUR for
 
 Download the latest binary release from the [releases section](https://github.com/angelofallars/treefetch/releases).
 
-## Compiling Manually
+## Compiling
+
+Compiling is currently the only option to run `treefetch` for **BSD/macOS** systems.
 
 To compile and install treefetch manually, you first need to [install the Rust
-compiler](https://www.rust-lang.org/tools/install). When you do it this way,
-`treefetch` will be automatically added to your PATH and you can run this
-program anywhere.
+compiler](https://www.rust-lang.org/tools/install).
 
-- `git clone https://github.com/angelofallars/treefetch`
-- `cd treefetch`
-- `cargo install --path .`
+- `cargo install --git https://github.com/angelofallars/treefetch`
 
 <img src="https://user-images.githubusercontent.com/39676098/145779840-59f1d0ef-7577-408c-a9fb-ce93b262c7df.png" alt="cbonsai and treefetch" width=600px>
 

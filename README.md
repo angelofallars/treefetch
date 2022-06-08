@@ -10,19 +10,25 @@ A great pair for [cbonsai](https://gitlab.com/jallbrit/cbonsai), to help you get
 
 <img src="https://repology.org/badge/vertical-allrepos/treefetch.svg">
 
+## Installation
 
-## Install (Arch Linux)
+### OpenSUSE Tumbleweed
 
-- `yay -S treefetch-bin`
-- `paru -S treefetch-bin`
+`zypper in treefetch`
 
-## Install (Debian/Ubuntu)
+### Arch Linux
+
+`yay -S treefetch-bin`
+
+`paru -S treefetch-bin`
+
+### Debian/Ubuntu
 
 `pacstall -I treefetch-bin`
 
 Install Pacstall [here](https://github.com/pacstall/pacstall) (basically AUR for Debian-based distros)
 
-## Install (Binary)
+### Binary
 
 Download the latest binary release from the [releases section](https://github.com/angelofallars/treefetch/releases).
 

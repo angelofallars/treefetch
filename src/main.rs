@@ -8,7 +8,7 @@ fn main() {
         .arg(
             arg!([TREE])
                 .help("Which tree to display.")
-                .possible_values(["normal", "xmas", "bonsai"])
+                .possible_values(["normal", "xmas", "bonsai","none"])
                 .default_value("normal"),
         )
         .get_matches();
@@ -74,6 +74,19 @@ fn main() {
                 {yellow}      ||        {reset}
                 ",
                 red, green, blue, yellow, bright_yellow, bold, reset
+            )
+        }
+        
+        "none" => {
+            with_color!(
+                "
+                
+                
+
+                
+                
+                
+                ",
             )
         }
 

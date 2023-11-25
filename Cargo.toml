@@ -7,5 +7,5 @@ edition = "2021"
 
 [dependencies]
 regex = "1"
-systemstat = "0.1"
-nix = "0.23"
+systemstat = "0.2.3"
+nix = {version = "0.27", features = ["hostname", "feature"]}

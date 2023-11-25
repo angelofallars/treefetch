@@ -1,7 +1,10 @@
-use std::io::Read;
 use std::env;
+use std::ffi::OsStr;
 use std::fs;
-use regex::{Regex, Captures};
+use std::io::Read;
+
+use regex::{Captures, Regex};
+
 use crate::colors;
 
 fn format_data(key: &str, value: &str) -> String {
@@ -11,7 +14,7 @@ fn format_data(key: &str, value: &str) -> String {
             color = colors::green,
             bold = colors::bold,
             reset = colors::reset,
-            )
+    )
 }
 
 // Search with Regex in a string and return all of the matches
@@ -33,10 +36,8 @@ pub fn get_user_host_name(is_christmas: bool) -> Result<(String, String), String
     }
 
     // Hostname
-    let mut buf = [0u8; 128];
-    let hostname_cstr = nix::unistd::gethostname(&mut buf)
-        .map_err(|_| "Failed getting hostname".to_owned())?;
-    let hostname = hostname_cstr.to_str().map_err(|_| "Failed decoding hostname")?;
+    let hostname_cstr = nix::unistd ::gethostname().unwrap();
+    let hostname = hostname_cstr.to_str().unwrap();
 
     // Combine username and hostname into a formatted string
     let main_color: &str;
@@ -54,7 +55,7 @@ pub fn get_user_host_name(is_christmas: bool) -> Result<(String, String), String
                                  color = main_color,
                                  bold = colors::bold,
                                  reset = colors::reset,
-                                 ).replace(" ", "").replace("\n", "");
+    ).replace(" ", "").replace("\n", "");
 
     // Separator
     // format: username length + @ (1) + hostname length
@@ -144,14 +145,18 @@ pub fn get_distro_name() -> Result<String, String> {
 }
 
 pub fn get_kernel(show_kern_name: bool) -> Result<String, String> {
-    let uname = nix::sys::utsname::uname();
+    let uname = nix::sys::utsname::uname().unwrap();
     Ok(format_data(
         "kernel",
         &if show_kern_name {
-            format!("{}/{} {}", uname.sysname(), uname.machine(), uname.release())
+            format!("{}/{} {}", gs(uname.sysname()), gs(uname.machine()), gs(uname.release()))
         } else {
-            format!("{} {}", uname.release(), uname.machine())
+            format!("{} {}", gs(uname.release()), gs(uname.machine()))
         }))
+}
+
+fn gs(s: &OsStr) -> &str {
+    s.to_str().unwrap()
 }
 
 pub fn get_shell() -> Result<String, String> {
@@ -181,15 +186,25 @@ pub fn get_shell() -> Result<String, String> {
 pub fn format_uptime(time: std::time::Duration) -> String {
     let uptime_seconds = time.as_secs();
 
-    // Calculate the uptime in hours and minutes respectively
-    let uptime_hours = uptime_seconds / (60 * 60);
+    // Calculate the uptime in days, hours and minutes respectively
+    let uptime_days = uptime_seconds / (60 * 60 * 24);
+    let uptime_hours = (uptime_seconds % (60 * 60 * 24)) / (60 * 60);
     let uptime_minutes = (uptime_seconds % (60 * 60)) / 60;
 
-    format_data(
-        "uptime",
-        &format!("{hours}h {minutes}m",
-                 hours = uptime_hours,
-                 minutes = uptime_minutes))
+    if uptime_days > 0 {
+        format_data(
+            "uptime",
+            &format!("{days}d {hours}h {minutes}m",
+                     days = uptime_days,
+                     hours = uptime_hours,
+                     minutes = uptime_minutes))
+    } else {
+        format_data(
+            "uptime",
+            &format!("{hours}h {minutes}m",
+                     hours = uptime_hours,
+                     minutes = uptime_minutes))
+    }
 }
 
 pub fn format_memory(mem: systemstat::Memory) -> String {
